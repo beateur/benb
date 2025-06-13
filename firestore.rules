@@ -1,0 +1,72 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Test collection for connectivity checks - Public read only
+    match /test/{document} {
+      allow read: if true;
+    }
+    
+    // Properties collection - Public read, admin write
+    match /properties/{propertyId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.token.admin == true;
+      
+      // Property images subcollection
+      match /images/{imageId} {
+        allow read: if true;
+        allow write: if request.auth != null && request.auth.token.admin == true;
+      }
+      
+      // Property amenities subcollection
+      match /amenities/{amenityId} {
+        allow read: if true;
+        allow write: if request.auth != null && request.auth.token.admin == true;
+      }
+    }
+    
+    // Reservations collection - Users can read their own, admin can read/write all
+    match /reservations/{reservationId} {
+      allow read: if request.auth != null && 
+        (request.auth.uid == resource.data.userId || request.auth.token.admin == true);
+      allow write: if request.auth != null && 
+        (request.auth.uid == request.resource.data.userId || request.auth.token.admin == true);
+    }
+    
+    // Availability collection - Public read, admin write
+    match /availability/{yearMonth} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.token.admin == true;
+      
+      // Daily availability subcollection
+      match /days/{dayId} {
+        allow read: if true;
+        allow write: if request.auth != null && request.auth.token.admin == true;
+      }
+    }
+    
+    // Events collection - Public read, admin write
+    match /events/{eventId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.token.admin == true;
+    }
+    
+    // Users collection - Users can read/write their own profile
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read: if request.auth != null && request.auth.token.admin == true;
+    }
+    
+    // Admin-only collections
+    match /admin/{document=**} {
+      allow read, write: if request.auth != null && request.auth.token.admin == true;
+    }
+    
+    // Settings collection - Public read, admin write
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.token.admin == true;
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "name": "Location de Vacances Premium",
+  "short_name": "VacancesPremium",
+  "description": "Découvrez nos propriétés exceptionnelles pour des vacances inoubliables",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#000000",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "start_url": "/",
+  "scope": "/",
+  "lang": "fr",
+  "orientation": "portrait-primary"
+}
