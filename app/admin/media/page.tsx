@@ -70,16 +70,19 @@ export default function MediaPage() {
   const [loadingMedia, setLoadingMedia] = useState(true);
 
   useEffect(() => {
+    console.log("ça boucle 20")
     setMounted(true);
   }, []);
 
   useEffect(() => {
+    console.log("ça boucle 21")
     if (!loading && (!user || !isAdmin)) {
       router.push('/admin/login');
     }
   }, [user, isAdmin, loading, router]);
 
   useEffect(() => {
+    console.log("ça boucle 22")
     if (mounted && user && isAdmin) {
       fetchMediaItems();
     }

@@ -19,6 +19,7 @@ export const useAuth = () => {
   });
 
   useEffect(() => {
+    console.log("ça boucle 29")
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         try {

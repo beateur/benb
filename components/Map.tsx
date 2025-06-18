@@ -40,7 +40,7 @@ export default function Map({
   city = "Saint-Tropez",
   country = "France",
   nearbyAttractions = [
-    { name: "Plage de Pampelonne", distance: "2.5 km", type: "beach", description: "Plage mythique de Saint-Tropez" },
+    { name: "Plage de la Roya", distance: "1 km", type: "beach", description: "parking disponible" },
     { name: "Port de Saint-Tropez", distance: "1.8 km", type: "culture", description: "Port historique et ses yachts" },
     { name: "Citadelle de Saint-Tropez", distance: "2.1 km", type: "culture", description: "Musée maritime" },
     { name: "Club 55", distance: "2.7 km", type: "restaurant", description: "Restaurant de plage légendaire" },
@@ -52,6 +52,7 @@ export default function Map({
   const [mapLoaded, setMapLoaded] = useState(false);
 
   useEffect(() => {
+    console.log("ça boucle 41")
     setMounted(true);
     // Simulate map loading
     const timer = setTimeout(() => setMapLoaded(true), 1000);
@@ -258,22 +259,22 @@ export default function Map({
                 <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
                   <Car className="h-5 w-5 text-blue-600" />
                   <div>
-                    <p className="font-medium">En voiture</p>
-                    <p className="text-sm text-muted-foreground">45 min depuis Nice</p>
+                    <p className="font-medium">En Ferry</p>
+                    <p className="text-sm text-muted-foreground">Arrivée à Bastia</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
                   <Plane className="h-5 w-5 text-green-600" />
                   <div>
-                    <p className="font-medium">Aéroport Nice</p>
-                    <p className="text-sm text-muted-foreground">1h15 en voiture</p>
+                    <p className="font-medium">Aéroport Bastia Poretta</p>
+                    <p className="text-sm text-muted-foreground">45 minutes en voiture</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
                   <Train className="h-5 w-5 text-purple-600" />
                   <div>
-                    <p className="font-medium">Gare SNCF</p>
-                    <p className="text-sm text-muted-foreground">15 min à pied</p>
+                    <p className="font-medium">Location de voiture</p>
+                    <p className="text-sm text-muted-foreground">À l'aéroport et au port de Bastia</p>
                   </div>
                 </div>
               </CardContent>

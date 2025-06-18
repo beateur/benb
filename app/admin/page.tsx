@@ -22,6 +22,7 @@ export default function AdminDashboard() {
   const router = useRouter();
 
   useEffect(() => {
+    console.log("ça boucle 11")
     if (!loading && (!user || !isAdmin)) {
       router.push('/admin/login');
     }

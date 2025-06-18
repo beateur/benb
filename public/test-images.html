@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Image Fallback</title>
+</head>
+<body>
+    <h1>Test des images AVIF avec fallback PNG</h1>
+    
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 20px;">
+        <!-- Test avec une image AVIF qui existe -->
+        <div>
+            <h3>Image AVIF existante</h3>
+            <img src="/assets/images/principale-exterieur-01.avif" 
+                 alt="Extérieur AVIF" 
+                 style="width: 100%; height: 200px; object-fit: cover;"
+                 onerror="this.src='/assets/images/principale-exterieur-01.png'; console.log('Fallback to PNG for principale-exterieur-01');">
+        </div>
+        
+        <!-- Test avec une image AVIF qui n'existe pas (pour tester le fallback) -->
+        <div>
+            <h3>Image AVIF inexistante (fallback test)</h3>
+            <img src="/assets/images/test-inexistant.avif" 
+                 alt="Test fallback" 
+                 style="width: 100%; height: 200px; object-fit: cover;"
+                 onerror="this.src='/assets/images/salon-principale-02.png'; console.log('Fallback activated for test image');">
+        </div>
+        
+        <!-- Test avec une image PNG directe -->
+        <div>
+            <h3>Image PNG directe</h3>
+            <img src="/assets/images/salon-principale-02.png" 
+                 alt="Salon PNG" 
+                 style="width: 100%; height: 200px; object-fit: cover;">
+        </div>
+    </div>
+    
+    <script>
+        console.log('Testing image fallback functionality...');
+        
+        // Test pour vérifier si le navigateur supporte AVIF
+        const avifTest = new Image();
+        avifTest.onload = () => console.log('✅ AVIF format is supported by this browser');
+        avifTest.onerror = () => console.log('❌ AVIF format is NOT supported by this browser');
+        avifTest.src = 'data:image/avif;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUIAAADybWV0YQAAAAAAAAAoaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAGxpYmF2aWYAAAAADnBpdG0AAAAAAAEAAAAeaWxvYwAAAABEAAABAAEAAAABAAABGgAAAB0AAAAoaWluZgAAAAAAAQAAABppbmZlAgAAAAABAABhdjAxQ29sb3IAAAAAamlwcnAAAABLaXBjbwAAABRpc3BlAAAAAAAAAAIAAAACAAAAEHBpeGkAAAAAAwgICAAAAAxhdjFDgQ0MAAAAABNjb2xybmNseAACAAIAAYAAAAAXaXBtYQAAAAAAAAABAAEEAQKDBAAAACVtZGF0EgAKCBgABogQEAwgMg8f8D///8WfhwB8+ErK42A=';
+    </script>
+</body>
+</html>

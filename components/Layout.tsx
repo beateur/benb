@@ -59,6 +59,7 @@ export default function Layout({
 
   // Handle scroll effect
   useEffect(() => {
+    console.log("ça boucle 39")
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
@@ -69,6 +70,7 @@ export default function Layout({
 
   // Close mobile menu on route change
   useEffect(() => {
+    console.log("ça boucle 40")
     setMobileMenuOpen(false);
   }, [router]);
 

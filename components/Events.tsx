@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -43,110 +43,120 @@ interface EventsProps {
   events?: Event[];
 }
 
+// Définition en-dehors du composant pour garder une référence stable
+const DEFAULT_EVENTS: Event[] = [
+  {
+    id: '1',
+    title: 'Festival de Jazz de Juan-les-Pins',
+    description: 'Le plus prestigieux festival de jazz de la Côte d\'Azur avec des artistes internationaux.',
+    type: 'festival',
+    startDate: '2024-07-15',
+    endDate: '2024-07-25',
+    location: 'Juan-les-Pins',
+    distance: '25 km',
+    price: 'À partir de 45€',
+    website: 'https://jazzajuan.com',
+    featured: true
+  },
+  {
+    id: '2',
+    title: 'Marché Provençal de Saint-Tropez',
+    description: 'Marché traditionnel avec produits locaux, artisanat et spécialités provençales.',
+    type: 'culture',
+    startDate: '2024-06-01',
+    endDate: '2024-09-30',
+    location: 'Place des Lices, Saint-Tropez',
+    distance: '2 km',
+    price: 'Gratuit'
+  },
+  {
+    id: '3',
+    title: 'Exposition Picasso',
+    description: 'Rétrospective exceptionnelle des œuvres de Pablo Picasso au Musée d\'Art Moderne.',
+    type: 'exhibition',
+    startDate: '2024-06-10',
+    endDate: '2024-08-31',
+    location: 'Musée d\'Art Moderne, Nice',
+    distance: '65 km',
+    price: '15€',
+    website: 'https://mamac-nice.org'
+  },
+  {
+    id: '4',
+    title: 'Régates Royales de Cannes',
+    description: 'Compétition de voiliers classiques dans la baie de Cannes.',
+    type: 'sports',
+    startDate: '2024-09-20',
+    endDate: '2024-09-27',
+    location: 'Cannes',
+    distance: '35 km',
+    price: 'Gratuit (spectacle)',
+    featured: true
+  },
+  {
+    id: '5',
+    title: 'Fête de la Gastronomie',
+    description: 'Célébration de la cuisine méditerranéenne avec des chefs étoilés.',
+    type: 'gastronomy',
+    startDate: '2024-07-05',
+    endDate: '2024-07-07',
+    location: 'Port Grimaud',
+    distance: '15 km',
+    price: 'À partir de 25€'
+  },
+  {
+    id: '6',
+    title: 'Randonnée des Calanques',
+    description: 'Découverte guidée des calanques et de la faune méditerranéenne.',
+    type: 'nature',
+    startDate: '2024-06-01',
+    endDate: '2024-10-31',
+    location: 'Massif des Maures',
+    distance: '20 km',
+    price: '12€'
+  }
+];
+
 export default function Events({
   propertyId = "default",
-  events = [
-    {
-      id: '1',
-      title: 'Festival de Jazz de Juan-les-Pins',
-      description: 'Le plus prestigieux festival de jazz de la Côte d\'Azur avec des artistes internationaux.',
-      type: 'festival',
-      startDate: '2024-07-15',
-      endDate: '2024-07-25',
-      location: 'Juan-les-Pins',
-      distance: '25 km',
-      price: 'À partir de 45€',
-      website: 'https://jazzajuan.com',
-      featured: true
-    },
-    {
-      id: '2',
-      title: 'Marché Provençal de Saint-Tropez',
-      description: 'Marché traditionnel avec produits locaux, artisanat et spécialités provençales.',
-      type: 'culture',
-      startDate: '2024-06-01',
-      endDate: '2024-09-30',
-      location: 'Place des Lices, Saint-Tropez',
-      distance: '2 km',
-      price: 'Gratuit'
-    },
-    {
-      id: '3',
-      title: 'Exposition Picasso',
-      description: 'Rétrospective exceptionnelle des œuvres de Pablo Picasso au Musée d\'Art Moderne.',
-      type: 'exhibition',
-      startDate: '2024-06-10',
-      endDate: '2024-08-31',
-      location: 'Musée d\'Art Moderne, Nice',
-      distance: '65 km',
-      price: '15€',
-      website: 'https://mamac-nice.org'
-    },
-    {
-      id: '4',
-      title: 'Régates Royales de Cannes',
-      description: 'Compétition de voiliers classiques dans la baie de Cannes.',
-      type: 'sports',
-      startDate: '2024-09-20',
-      endDate: '2024-09-27',
-      location: 'Cannes',
-      distance: '35 km',
-      price: 'Gratuit (spectacle)',
-      featured: true
-    },
-    {
-      id: '5',
-      title: 'Fête de la Gastronomie',
-      description: 'Célébration de la cuisine méditerranéenne avec des chefs étoilés.',
-      type: 'gastronomy',
-      startDate: '2024-07-05',
-      endDate: '2024-07-07',
-      location: 'Port Grimaud',
-      distance: '15 km',
-      price: 'À partir de 25€'
-    },
-    {
-      id: '6',
-      title: 'Randonnée des Calanques',
-      description: 'Découverte guidée des calanques et de la faune méditerranéenne.',
-      type: 'nature',
-      startDate: '2024-06-01',
-      endDate: '2024-10-31',
-      location: 'Massif des Maures',
-      distance: '20 km',
-      price: '12€'
-    }
-  ]
+  events = DEFAULT_EVENTS
 }: EventsProps) {
   const [mounted, setMounted] = useState(false);
-  const [filteredEvents, setFilteredEvents] = useState<Event[]>([]);
   const [selectedType, setSelectedType] = useState<string>('all');
 
+  // On ne monte le composant qu'en client pour éviter les mismatch SSR
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  useEffect(() => {
-    if (mounted) {
-      const now = new Date();
-      const futureDate = addDays(now, 90); // Show events for next 3 months
-      
-      let filtered = events.filter(event => {
-        const eventStart = parseISO(event.startDate);
-        const eventEnd = parseISO(event.endDate);
-        return isAfter(eventEnd, now) && isBefore(eventStart, futureDate);
-      });
+  // Calcul des événements filtrés, mémorisé et sans boucle infinie
+  const filteredEvents = useMemo(() => {
+    if (!mounted) return [];
+    const now = new Date();
+    const futureDate = addDays(now, 90);
 
-      if (selectedType !== 'all') {
-        filtered = filtered.filter(event => event.type === selectedType);
-      }
+    let list = events.filter(event => {
+      const start = parseISO(event.startDate);
+      const end   = parseISO(event.endDate);
+      return isAfter(end, now) && isBefore(start, futureDate);
+    });
 
-      // Sort by start date
-      filtered.sort((a, b) => parseISO(a.startDate).getTime() - parseISO(b.startDate).getTime());
-      
-      setFilteredEvents(filtered);
+    if (selectedType !== 'all') {
+      list = list.filter(event => event.type === selectedType);
     }
-  }, [mounted, events, selectedType]);
+
+    return list.sort((a, b) =>
+      parseISO(a.startDate).getTime() - parseISO(b.startDate).getTime()
+    );
+  }, [events, selectedType, mounted]);
+
+  if (!mounted) {
+    return null;
+  }
+
+  if (filteredEvents.length === 0 && selectedType === 'all') {
+    return null;
+  }
 
   const getEventIcon = (type: string) => {
     switch (type) {
@@ -175,28 +185,19 @@ export default function Events({
   };
 
   const eventTypes = [
-    { value: 'all', label: 'Tous les événements', icon: <Calendar className="h-4 w-4" /> },
-    { value: 'festival', label: 'Festivals', icon: <Music className="h-4 w-4" /> },
-    { value: 'exhibition', label: 'Expositions', icon: <Palette className="h-4 w-4" /> },
-    { value: 'sports', label: 'Sports', icon: <Waves className="h-4 w-4" /> },
-    { value: 'gastronomy', label: 'Gastronomie', icon: <Utensils className="h-4 w-4" /> },
-    { value: 'culture', label: 'Culture', icon: <Camera className="h-4 w-4" /> },
-    { value: 'nature', label: 'Nature', icon: <Mountain className="h-4 w-4" /> }
+    { value: 'all',       label: 'Tous les événements', icon: <Calendar className="h-4 w-4" /> },
+    { value: 'festival',  label: 'Festivals',           icon: <Music className="h-4 w-4" /> },
+    { value: 'exhibition',label: 'Expositions',         icon: <Palette className="h-4 w-4" /> },
+    { value: 'sports',    label: 'Sports',              icon: <Waves className="h-4 w-4" /> },
+    { value: 'gastronomy',label: 'Gastronomie',         icon: <Utensils className="h-4 w-4" /> },
+    { value: 'culture',   label: 'Culture',             icon: <Camera className="h-4 w-4" /> },
+    { value: 'nature',    label: 'Nature',              icon: <Mountain className="h-4 w-4" /> }
   ];
-
-  if (!mounted) {
-    return null;
-  }
-
-  // Don't render the section if no events
-  if (filteredEvents.length === 0 && selectedType === 'all') {
-    return null;
-  }
 
   return (
     <section className="py-20 bg-gradient-to-b from-background to-muted/20">
       <div className="container mx-auto px-4">
-        {/* Section Header */}
+        {/* Header */}
         <motion.div
           className="text-center mb-16"
           initial={{ opacity: 0, y: 30 }}
@@ -212,7 +213,7 @@ export default function Events({
           </p>
         </motion.div>
 
-        {/* Event Type Filters */}
+        {/* Filtres */}
         <motion.div
           className="flex flex-wrap justify-center gap-3 mb-12"
           initial={{ opacity: 0, y: 20 }}
@@ -220,7 +221,7 @@ export default function Events({
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          {eventTypes.map((type) => (
+          {eventTypes.map(type => (
             <Button
               key={type.value}
               variant={selectedType === type.value ? "default" : "outline"}
@@ -238,15 +239,15 @@ export default function Events({
           ))}
         </motion.div>
 
-        {/* Events Grid */}
+        {/* Grille d'événements */}
         {filteredEvents.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredEvents.map((event, index) => (
+            {filteredEvents.map((event, idx) => (
               <motion.div
                 key={event.id}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
+                transition={{ duration: 0.6, delay: idx * 0.1 }}
                 viewport={{ once: true }}
               >
                 <Card className={`group hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border-0 overflow-hidden ${
@@ -260,7 +261,6 @@ export default function Events({
                       </div>
                     </div>
                   )}
-                  
                   <CardHeader className="pb-4">
                     <div className="flex items-start justify-between gap-3 mb-3">
                       <Badge 
@@ -285,8 +285,6 @@ export default function Events({
                     <p className="text-muted-foreground leading-relaxed">
                       {event.description}
                     </p>
-
-                    {/* Event Details */}
                     <div className="space-y-3">
                       <div className="flex items-center gap-2 text-sm">
                         <Calendar className="h-4 w-4 text-primary flex-shrink-0" />
@@ -297,12 +295,10 @@ export default function Events({
                           )}
                         </span>
                       </div>
-                      
                       <div className="flex items-center gap-2 text-sm">
                         <MapPin className="h-4 w-4 text-primary flex-shrink-0" />
                         <span className="truncate">{event.location}</span>
                       </div>
-
                       {event.price && (
                         <div className="flex items-center gap-2 text-sm">
                           <Wine className="h-4 w-4 text-primary flex-shrink-0" />
@@ -310,8 +306,6 @@ export default function Events({
                         </div>
                       )}
                     </div>
-
-                    {/* Action Button */}
                     <div className="pt-4 border-t border-border/50">
                       {event.website ? (
                         <Button
@@ -340,7 +334,6 @@ export default function Events({
             ))}
           </div>
         ) : (
-          /* No Events Message */
           <motion.div
             className="text-center py-16"
             initial={{ opacity: 0 }}

@@ -16,28 +16,117 @@ import {
 interface HeroProps {
   propertyId?: string;
   coverImageUrl?: string;
+  coverVideoUrl?: string; // Ajout support vidéo
+  mediaType?: 'image' | 'video'; // Type de média
   title?: string;
   subtitle?: string;
   location?: string;
   maxGuests?: number;
 }
 
+// Composant BackgroundMedia pour gérer image/vidéo
+interface BackgroundMediaProps {
+  mediaType: 'image' | 'video';
+  imageUrl: string;
+  videoUrl?: string;
+  y: any;
+  opacity: any;
+  title: string;
+}
+
+function BackgroundMedia({ mediaType, imageUrl, videoUrl, y, opacity, title }: BackgroundMediaProps) {
+  if (mediaType === 'video' && videoUrl) {
+    return (
+      <motion.div 
+        className="absolute inset-0"
+        style={{ y, opacity }}
+      >
+        <video
+          ref={(video) => {
+            if (video) {
+              // Force la lecture après le mount
+              video.play().catch((error) => {
+                console.error('Autoplay prevented:', error);
+                // Essayer de lancer la lecture au premier clic utilisateur
+                const playOnInteraction = () => {
+                  video.play().then(() => {
+                    console.log('Video started playing after user interaction');
+                    document.removeEventListener('click', playOnInteraction);
+                  });
+                };
+                document.addEventListener('click', playOnInteraction);
+              });
+            }
+          }}
+          muted
+          loop
+          playsInline
+          preload="auto"
+          className="w-full h-full object-cover"
+          onError={(e) => {
+            console.error('Video error:', e, 'URL:', videoUrl);
+            const error = (e.target as HTMLVideoElement).error;
+            console.error('Error details:', error?.code, error?.message);
+          }}
+        >
+          <source src={videoUrl} type="video/mp4" />
+        </video>
+        {/* Image de fallback en arrière-plan */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat -z-10"
+          style={{ backgroundImage: `url(${imageUrl})` }}
+        />
+      </motion.div>
+    );
+  }
+  
+  // Mode image par défaut
+  return (
+    <motion.div 
+      className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+      style={{ 
+        backgroundImage: `url(${imageUrl})`,
+        y,
+        opacity
+      }}
+    />
+  );
+}
+
 export default function Hero({
   propertyId = "default",
   coverImageUrl = "https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop",
-  title = "Villa Méditerranéenne d'Exception",
+  coverVideoUrl,
+  mediaType = 'image',
+  title = "La ",
   subtitle = "Luxe, confort et vue panoramique sur la Côte d'Azur",
-  location = "Saint-Tropez, France",
+  location = "Saint-Florent, France",
   maxGuests = 8
 }: HeroProps) {
   const [mounted, setMounted] = useState(false);
+  const [isScrollIndicatorVisible, setIsScrollIndicatorVisible] = useState(true);
   const { scrollY } = useScroll();
   
   // Parallax effect
   const y = useTransform(scrollY, [0, 500], [0, 150]);
   const opacity = useTransform(scrollY, [0, 300], [1, 0.3]);
 
+  // Effet pour gérer la visibilité du bouton de découverte
   useEffect(() => {
+    console.log("ça boucle 8")
+    const handleScroll = () => {
+      // Faire disparaître dès qu'on scrolle (position > 0)
+      setIsScrollIndicatorVisible(window.scrollY === 0);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Vérifier la position initiale
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    console.log("ça boucle 9")
     setMounted(true);
   }, []);
 
@@ -62,22 +151,15 @@ export default function Hero({
 
   return (
     <section className="relative h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Image with Parallax */}
-      <motion.div 
-        className="absolute inset-0 z-0"
-        style={{ y }}
-      >
-        <div 
-          className="w-full h-[120%] bg-cover bg-center bg-no-repeat"
-          style={{ 
-            backgroundImage: `url(${coverImageUrl})`,
-            filter: 'brightness(0.7)'
-          }}
-        />
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/60" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-black/30" />
-      </motion.div>
+      {/* Background Media with Parallax */}
+      <BackgroundMedia
+        mediaType={mediaType}
+        imageUrl={coverImageUrl}
+        videoUrl={coverVideoUrl}
+        y={y}
+        opacity={opacity}
+        title={title}
+      />
 
       {/* Content */}
       <motion.div 
@@ -151,7 +233,7 @@ export default function Hero({
           <Button
             variant="outline"
             size="lg"
-            className="border-white/30 text-white hover:bg-white hover:text-black text-lg px-8 py-6 h-auto font-semibold backdrop-blur-sm transition-all duration-300 hover:scale-105"
+            className="bg-white text-black border-white text-lg px-8 py-6 h-auto font-semibold backdrop-blur-sm"
             onClick={() => scrollToSection('reservation')}
           >
             <Calendar className="h-5 w-5 mr-2" />
@@ -160,24 +242,29 @@ export default function Hero({
         </motion.div>
 
         {/* Scroll Indicator */}
-        <motion.div
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.5, duration: 0.6 }}
-        >
+        {isScrollIndicatorVisible && (
           <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            className="cursor-pointer"
-            onClick={() => scrollToSection('decouverte')}
+            className="fixed bottom-12 left-1/2 transform -translate-x-1/2 z-20"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
           >
-            <div className="flex flex-col items-center gap-2 text-white/70 hover:text-white transition-colors">
-              <span className="text-sm font-medium">Découvrir</span>
-              <ChevronDown className="h-6 w-6" />
-            </div>
+            <motion.div
+              animate={{ y: [0, 10, 0] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              className="cursor-pointer bg-black/20 backdrop-blur-sm px-4 py-2 rounded-full"
+              onClick={() => {
+                scrollToSection('decouverte');
+              }}
+            >
+              <div className="flex flex-col items-center gap-2 text-white/90 hover:text-white transition-colors">
+                <span className="text-sm font-medium">Découvrir</span>
+                <ChevronDown className="h-6 w-6" />
+              </div>
+            </motion.div>
           </motion.div>
-        </motion.div>
+        )}
       </motion.div>
 
       {/* Floating Action Button */}

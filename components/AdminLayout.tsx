@@ -47,10 +47,12 @@ export default function AdminLayout({ children, title = "Administration" }: Admi
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    console.log("ça boucle 33")
     setMounted(true);
   }, []);
 
   useEffect(() => {
+    console.log("ça boucle 34")
     if (!loading && (!user || !isAdmin)) {
       router.push('/admin/login');
     }

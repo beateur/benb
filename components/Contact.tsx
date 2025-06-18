@@ -42,6 +42,7 @@ export default function Contact({ propertyId = "default" }: ContactProps) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log("ça boucle 35")
     setMounted(true);
     fetchContactLinks();
   }, []);

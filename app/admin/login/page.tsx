@@ -21,6 +21,8 @@ export default function AdminLogin() {
   const router = useRouter();
 
   useEffect(() => {
+        console.log("ça boucle 19")
+
     setMounted(true);
     
     // Check if user is already authenticated

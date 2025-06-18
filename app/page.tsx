@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Property } from '@/src/types/firestore';
 import Hero from '@/components/Hero';
 import Discovery from '@/components/Discovery';
@@ -8,17 +9,15 @@ import Map from '@/components/Map';
 import Events from '@/components/Events';
 import Reservation from '@/components/Reservation';
 
-interface PageProps {
-  searchParams: { [key: string]: string | string[] | undefined };
-}
-
-export default function Home({ searchParams }: PageProps) {
-  const propertyId = (searchParams?.propertyId as string) || "default";
+export default function Home() {
+  const searchParams = useSearchParams();
+  const propertyId = searchParams.get('propertyId') || "default";
   const [mounted, setMounted] = useState(false);
   const [property, setProperty] = useState<Property | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log("ça boucle 6")
     setMounted(true);
     fetchPropertyData();
   }, [propertyId]);
@@ -70,27 +69,31 @@ export default function Home({ searchParams }: PageProps) {
   // Default property data for demo purposes
   const defaultPropertyData = {
     id: propertyId,
-    name: "Villa Méditerranéenne d'Exception",
-    description: "Luxe, confort et vue panoramique sur la Côte d'Azur",
+    name: "La Villa Roya",
+    description: "Luxe, confort et vue panoramique sur le Golfe de Saint-Florent",
     type: 'villa' as const,
     status: 'active' as const,
     location: {
-      address: "123 Avenue de la Côte d'Azur",
-      city: "Saint-Tropez",
+      address: "Route de Casta",
+      city: "Saint-Florent",
       country: "France",
       coordinates: {
-        lat: 43.2681,
-        lng: 6.6401
+        lat: 42.6701,
+        lng: 9.2905
       }
     },
-    pricePerNight: 450,
-    maxGuests: 8,
-    bedrooms: 4,
-    bathrooms: 3,
+    pricePerNight: 1027,
+    maxGuests: 10,
+    bedrooms: 5,
+    bathrooms: 5,
     area: 250,
     images: [
-      "https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080"
+      "assets/images/CoverHero.avif",
     ],
+    videos: [
+      "/assets/images/Hero-video.mp4",
+    ],
+    mediaType: 'video' as const,
     amenities: ['Piscine privée', 'WiFi gratuit', 'Parking', 'Climatisation', 'Vue mer', 'Cuisine équipée'],
     rules: ['Non fumeur', 'Animaux non autorisés'],
     checkInTime: '16:00',
@@ -107,6 +110,8 @@ export default function Home({ searchParams }: PageProps) {
       <Hero
         propertyId={propertyData.id}
         coverImageUrl={propertyData.images?.[0]}
+        coverVideoUrl={propertyData.videos?.[0]}
+        mediaType={propertyData.mediaType}
         title={propertyData.name}
         subtitle={propertyData.description}
         location={`${propertyData.location.city}, ${propertyData.location.country}`}
@@ -116,7 +121,7 @@ export default function Home({ searchParams }: PageProps) {
       {/* Discovery Section */}
       <Discovery
         propertyId={propertyData.id}
-        title="Découvrez votre refuge de luxe"
+        title="Découvrez votre villa de luxe"
         description="Plongez dans l'univers de cette propriété d'exception à travers notre galerie immersive. Chaque espace a été pensé pour votre confort et votre bien-être."
       />
 

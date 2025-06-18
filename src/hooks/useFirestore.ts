@@ -26,6 +26,7 @@ export const useProperties = (filters?: PropertyFilters) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    console.log("ça boucle 23")
     const fetchProperties = async () => {
       try {
         setLoading(true);
@@ -52,6 +53,7 @@ export const useProperty = (id: string) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    console.log("ça boucle 24")
     if (!id) return;
 
     const fetchProperty = async () => {
@@ -80,6 +82,7 @@ export const useReservations = (filters?: ReservationFilters) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    console.log("ça boucle 25")
     const fetchReservations = async () => {
       try {
         setLoading(true);
@@ -106,6 +109,7 @@ export const useAvailability = (propertyId: string, yearMonth: string) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    console.log("ça boucle 26")
     if (!propertyId || !yearMonth) return;
 
     const fetchAvailability = async () => {
@@ -134,6 +138,7 @@ export const useEvents = (propertyId?: string, startDate?: Date, endDate?: Date)
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    console.log("ça boucle 27")
     const fetchEvents = async () => {
       try {
         setLoading(true);
@@ -160,6 +165,7 @@ export const useUser = (userId: string) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    console.log("ça boucle 28")
     if (!userId) return;
 
     const fetchUser = async () => {

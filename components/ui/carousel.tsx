@@ -99,6 +99,7 @@ const Carousel = React.forwardRef<
     );
 
     React.useEffect(() => {
+      console.log("ça boucle 31")
       if (!api || !setApi) {
         return;
       }
@@ -107,6 +108,7 @@ const Carousel = React.forwardRef<
     }, [api, setApi]);
 
     React.useEffect(() => {
+      console.log("ça boucle 32")
       if (!api) {
         return;
       }

@@ -22,6 +22,8 @@ export interface Property {
   };
   amenities: string[];
   images: string[];
+  videos?: string[]; // Ajout support vidéos
+  mediaType?: 'image' | 'video'; // Type de média pour background Hero
   rules: string[];
   checkInTime: string;
   checkOutTime: string;

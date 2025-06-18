@@ -76,16 +76,20 @@ export default function AvailabilityPage() {
   });
 
   useEffect(() => {
+    console.log("ça boucle 12")
     setMounted(true);
   }, []);
 
   useEffect(() => {
+    console.log("ça boucle 13")
     if (!loading && (!user || !isAdmin)) {
       router.push('/admin/login');
     }
   }, [user, isAdmin, loading, router]);
 
   useEffect(() => {
+            console.log("ça boucle 14")
+
     if (mounted && user && isAdmin) {
       fetchAvailabilityEvents();
     }

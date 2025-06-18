@@ -97,22 +97,29 @@ export default function EventsPage() {
   });
 
   useEffect(() => {
+    console.log("ça boucle 15")
     setMounted(true);
   }, []);
 
   useEffect(() => {
+    console.log("ça boucle 16")
+
     if (!loading && (!user || !isAdmin)) {
       router.push('/admin/login');
     }
   }, [user, isAdmin, loading, router]);
 
   useEffect(() => {
+    console.log("ça boucle 17")
+
     if (mounted && user && isAdmin) {
       fetchEvents();
     }
   }, [mounted, user, isAdmin]);
 
   useEffect(() => {
+            console.log("ça boucle 18")
+
     let filtered = events;
 
     if (searchTerm) {
