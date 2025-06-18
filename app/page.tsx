@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { Property } from '@/src/types/firestore';
 import Hero from '@/components/Hero';
 import Discovery from '@/components/Discovery';
+import VillaPresentation from '@/components/VillaPresentation';
 import Map from '@/components/Map';
 import Events from '@/components/Events';
 import Reservation from '@/components/Reservation';
@@ -125,6 +126,9 @@ export default function Home() {
         description="Plongez dans l'univers de cette propriété d'exception à travers notre galerie immersive. Chaque espace a été pensé pour votre confort et votre bien-être."
       />
 
+      {/* Villa Presentation Section */}
+      <VillaPresentation propertyId={propertyData.id} />
+
       {/* Map Section */}
       <Map
         propertyId={propertyData.id}
@@ -153,6 +157,7 @@ export default function Home() {
       <div className="fixed bottom-20 left-6 z-30 hidden lg:flex flex-col gap-2">
         {[
           { id: 'decouverte', label: 'Découverte' },
+          { id: 'villa-presentation', label: 'À propos' },
           { id: 'carte', label: 'Localisation' },
           { id: 'evenements', label: 'Événements' },
           { id: 'reservation', label: 'Réservation' }

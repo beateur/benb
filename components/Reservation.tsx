@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { DayPicker } from 'react-day-picker';
+import { DayPicker, DateRange } from 'react-day-picker';
 import { format, differenceInDays, addDays, isBefore, isAfter } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -74,7 +74,7 @@ export default function Reservation({
   amenities = ['Piscine privée', 'WiFi gratuit', 'Parking', 'Climatisation', 'Vue mer', 'Cuisine équipée']
 }: ReservationProps) {
   const [mounted, setMounted] = useState(false);
-  const [selectedRange, setSelectedRange] = useState<{ from?: Date; to?: Date }>({});
+  const [selectedRange, setSelectedRange] = useState<{ from?: Date; to?: Date } | undefined>(undefined);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [confirmationOpen, setConfirmationOpen] = useState(false);
   const [reservationId, setReservationId] = useState<string>('');
@@ -96,12 +96,26 @@ export default function Reservation({
   useEffect(() => {
     console.log("ça boucle 38")
     setMounted(true);
+    
+    // ✅ Test de connectivité Firebase
+    const testFirebaseConnection = async () => {
+      try {
+        console.log('🔄 Test de connexion Firebase...');
+        const testRef = collection(db, 'test');
+        const testDoc = await addDoc(testRef, { test: true, timestamp: new Date() });
+        console.log('✅ Firebase connecté, document test créé:', testDoc.id);
+      } catch (error: any) {
+        console.error('❌ Erreur de connexion Firebase:', error);
+      }
+    };
+    
+    testFirebaseConnection();
   }, []);
 
   const numberOfGuests = watch('numberOfGuests');
 
   // Calculate pricing
-  const nights = selectedRange.from && selectedRange.to 
+  const nights = selectedRange?.from && selectedRange?.to 
     ? differenceInDays(selectedRange.to, selectedRange.from)
     : 0;
   
@@ -118,16 +132,26 @@ export default function Reservation({
     );
   };
 
+  // Convert range to DateRange for DayPicker
+  const getSelectedForDayPicker = (): DateRange | undefined => {
+    if (selectedRange?.from && selectedRange?.to) {
+      return { from: selectedRange.from, to: selectedRange.to };
+    }
+    if (selectedRange?.from) {
+      return { from: selectedRange.from, to: selectedRange.from };
+    }
+    return undefined;
+  };
+
   // Handle date selection
   const handleDateSelect = (range: { from?: Date; to?: Date } | undefined) => {
-    if (range) {
-      setSelectedRange(range);
-    }
+    console.log('📅 Date sélectionnée:', range);
+    setSelectedRange(range);
   };
 
   // Handle form submission
   const onSubmit = async (data: ReservationForm) => {
-    if (!selectedRange.from || !selectedRange.to) {
+    if (!selectedRange?.from || !selectedRange?.to) {
       toast.error('Veuillez sélectionner vos dates de séjour');
       return;
     }
@@ -142,7 +166,7 @@ export default function Reservation({
     try {
       const reservationData = {
         propertyId,
-        userId: 'guest', // In real app, this would be the authenticated user ID
+        userId: 'guest', // Pour les réservations sans compte
         guestName: data.guestName,
         guestEmail: data.guestEmail,
         guestPhone: data.guestPhone,
@@ -159,16 +183,30 @@ export default function Reservation({
         updatedAt: new Date()
       };
 
+      console.log('🔄 Tentative de création de réservation:', reservationData);
+      
       const docRef = await addDoc(collection(db, 'reservations'), reservationData);
+      
+      console.log('✅ Réservation créée avec succès:', docRef.id);
+      
       setReservationId(docRef.id);
       setConfirmationOpen(true);
       reset();
-      setSelectedRange({});
+      setSelectedRange(undefined);
       
       toast.success('Réservation créée avec succès !');
-    } catch (error) {
-      console.error('Error creating reservation:', error);
-      toast.error('Erreur lors de la création de la réservation');
+    } catch (error: any) {
+      console.error('❌ Erreur détaillée lors de la création:', error);
+      
+      if (error?.code === 'permission-denied') {
+        toast.error('Permissions insuffisantes. Veuillez vous connecter ou contacter le support.');
+      } else if (error?.code === 'unavailable') {
+        toast.error('Service temporairement indisponible. Veuillez réessayer.');
+      } else if (error?.message?.includes('offline')) {
+        toast.error('Connexion interrompue. Vérifiez votre connexion internet.');
+      } else {
+        toast.error(`Erreur: ${error?.message || 'Erreur inconnue'}`);
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -227,7 +265,7 @@ export default function Reservation({
                 <div className="w-full">
                   <DayPicker
                     mode="range"
-                    selected={selectedRange}
+                    selected={getSelectedForDayPicker()}
                     onSelect={handleDateSelect}
                     disabled={[
                       { before: new Date() },
@@ -269,14 +307,14 @@ export default function Reservation({
                 </div>
 
                 {/* Selected Dates Display */}
-                {selectedRange.from && (
+                {selectedRange?.from && (
                   <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="font-medium text-primary">Dates sélectionnées</p>
                         <p className="text-sm text-muted-foreground">
                           {format(selectedRange.from, 'dd MMMM yyyy', { locale: fr })}
-                          {selectedRange.to && (
+                          {selectedRange?.to && (
                             <> - {format(selectedRange.to, 'dd MMMM yyyy', { locale: fr })}</>
                           )}
                         </p>
@@ -372,7 +410,7 @@ export default function Reservation({
                     type="submit"
                     size="lg"
                     className="w-full"
-                    disabled={!selectedRange.from || !selectedRange.to || nights < 1 || isSubmitting}
+                    disabled={!selectedRange?.from || !selectedRange?.to || nights < 1 || isSubmitting}
                   >
                     {isSubmitting ? (
                       <>
@@ -504,7 +542,7 @@ export default function Reservation({
                 <span className="text-muted-foreground">Numéro de réservation :</span>
                 <span className="font-mono">{reservationId.slice(-8).toUpperCase()}</span>
               </div>
-              {selectedRange.from && selectedRange.to && (
+              {selectedRange?.from && selectedRange?.to && (
                 <>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Arrivée :</span>
