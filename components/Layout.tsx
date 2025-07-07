@@ -167,7 +167,7 @@ export default function Layout({
                 </div>
                 <div className="hidden sm:block">
                   <h1 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">
-                    VacancesPremium
+                    La Ville Roya
                   </h1>
                   <p className="text-xs text-muted-foreground">Locations d'exception</p>
                 </div>
@@ -226,7 +226,7 @@ export default function Layout({
                             <Home className="h-4 w-4 text-primary" />
                           </div>
                           <div>
-                            <h2 className="font-semibold text-foreground">VacancesPremium</h2>
+                            <h2 className="font-semibold text-foreground">La Villa Roya</h2>
                             <p className="text-xs text-muted-foreground">Menu</p>
                           </div>
                         </div>
@@ -287,7 +287,7 @@ export default function Layout({
                   <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-lg">
                     <Home className="h-4 w-4 text-primary" />
                   </div>
-                  <h3 className="font-semibold text-foreground">VacancesPremium</h3>
+                  <h3 className="font-semibold text-foreground">La Villa Roya</h3>
                 </div>
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   Votre partenaire de confiance pour des locations de vacances d'exception. 
@@ -331,40 +331,14 @@ export default function Layout({
                   <div className="flex items-center gap-3 text-sm text-muted-foreground">
                     <Mail className="h-4 w-4 flex-shrink-0" />
                     <a 
-                      href="mailto:contact@vacancespremium.fr" 
+                      href="mailto:agduval77@gmail.com" 
                       className="hover:text-foreground transition-colors focus:outline-none focus:underline"
-                      aria-label="Envoyer un email à contact@vacancespremium.fr"
+                      aria-label="Envoyer un email à agduval77@gmail.com"
                     >
-                      contact@vacancespremium.fr
+                      agduval77@gmail.com
                     </a>
                   </div>
-                  <div className="flex items-start gap-3 text-sm text-muted-foreground">
-                    <MapPin className="h-4 w-4 flex-shrink-0 mt-0.5" />
-                    <address className="not-italic">
-                      123 Avenue des Champs-Élysées<br />
-                      75008 Paris, France
-                    </address>
-                  </div>
                 </div>
-              </div>
-
-              {/* Social Media */}
-              <div className="space-y-4">
-                <h4 className="font-semibold text-foreground">Suivez-nous</h4>
-                <div className="flex gap-3">
-                  <a
-                    href="https://instagram.com/vacancespremium"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center w-10 h-10 bg-muted hover:bg-primary hover:text-primary-foreground rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                    aria-label="Suivez-nous sur Instagram"
-                  >
-                    <Instagram className="h-5 w-5" />
-                  </a>
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Restez connecté pour nos dernières offres et actualités.
-                </p>
               </div>
             </div>
 
@@ -372,7 +346,7 @@ export default function Layout({
             <div className="mt-12 pt-8 border-t border-border">
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                 <p className="text-sm text-muted-foreground">
-                  © {new Date().getFullYear()} VacancesPremium. Tous droits réservés.
+                  © {new Date().getFullYear()}. Tous droits réservés.
                 </p>
                 <div className="flex items-center gap-6 text-sm">
                   <Link 

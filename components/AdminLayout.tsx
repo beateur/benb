@@ -168,7 +168,7 @@ export default function AdminLayout({ children, title = "Administration" }: Admi
           </div>
           <div>
             <h2 className="font-semibold text-foreground">Admin Panel</h2>
-            <p className="text-xs text-muted-foreground">VacancesPremium</p>
+            <p className="text-xs text-muted-foreground">La Villa Roya</p>
           </div>
         </div>
       </div>

@@ -158,8 +158,6 @@ function HomeContent() {
         {[
           { id: 'decouverte', label: 'Découverte' },
           { id: 'villa-presentation', label: 'À propos' },
-          { id: 'carte', label: 'Localisation' },
-          { id: 'evenements', label: 'Événements' },
           { id: 'reservation', label: 'Réservation' }
         ].map((section) => (
           <button

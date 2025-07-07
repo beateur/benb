@@ -92,7 +92,7 @@ export default function Contact({ propertyId = "default" }: ContactProps) {
       id: '2',
       type: 'instagram',
       label: 'Instagram',
-      value: 'vacancespremium',
+      value: 'La Villa Roya',
       isActive: true,
       order: 2
     },
@@ -100,7 +100,7 @@ export default function Contact({ propertyId = "default" }: ContactProps) {
       id: '3',
       type: 'email',
       label: 'Email',
-      value: 'contact@vacancespremium.fr',
+      value: 'agduval77@gmail.com',
       isActive: true,
       order: 3
     },
@@ -328,7 +328,7 @@ export default function Contact({ propertyId = "default" }: ContactProps) {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <p className="font-medium">VacancesPremium</p>
+                  <p className="font-medium">La Villa Roya</p>
                   <address className="text-sm text-muted-foreground not-italic">
                     123 Avenue des Champs-Élysées<br />
                     75008 Paris, France

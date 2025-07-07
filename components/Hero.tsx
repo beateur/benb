@@ -266,22 +266,6 @@ export default function Hero({
           </motion.div>
         )}
       </motion.div>
-
-      {/* Floating Action Button */}
-      <motion.div
-        className="fixed bottom-6 right-6 z-50"
-        initial={{ opacity: 0, scale: 0 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 2, duration: 0.5 }}
-      >
-        <Button
-          size="lg"
-          className="rounded-full w-14 h-14 bg-red-500 hover:bg-red-600 text-white shadow-lg hover:shadow-xl transition-all duration-300"
-          onClick={() => {/* Add to favorites logic */}}
-        >
-          <Heart className="h-6 w-6" />
-        </Button>
-      </motion.div>
     </section>
   );
 }
