@@ -99,7 +99,7 @@ export default function Hero({
   coverVideoUrl,
   mediaType = 'image',
   title = "La ",
-  subtitle = "Luxe, confort et vue panoramique sur la Côte d'Azur",
+  subtitle = "Luxe, confort et vue panoramique sur le Golfe de Saint-Florent",
   location = "Saint-Florent, France",
   maxGuests = 8
 }: HeroProps) {

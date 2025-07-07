@@ -59,25 +59,25 @@ const getRoomImages = (): { [key: string]: RoomImages } => {
           id: 'exterieur-terrasse',
           ...generateImageUrls('exterieur-terrasse'),
           type: 'image',
-          title: 'Terrasse extérieure'
+          title: 'Terrasse 1er étage'
         },
         {
           id: 'exterieur-terrasse-2',
           ...generateImageUrls('exterieur-terrasse-2'),
           type: 'image',
-          title: 'Terrasse - Vue 2'
+          title: 'Terrasse - Rez-de-chaussée'
         },
         {
           id: 'exterieur-terrasse-rooftop',
           ...generateImageUrls('exterieur-terrasse-rooftop'),
           type: 'image',
-          title: 'Terrasse rooftop'
+          title: 'Terrasse 1er étage - vue alternative'
         },
         {
           id: 'exterieur-terrasse-bis',
           ...generateImageUrls('exterieur-terrasse-bis'),
           type: 'image',
-          title: 'Terrasse - Vue alternative'
+          title: 'Terrasse couverte - Rez-de-chaussée'
         },
         {
           id: 'vue-exterieur-montagnes',
@@ -290,13 +290,15 @@ export default function Discovery({
       </div>
       
       {/* Main Grid - Principal Images Only */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:grid-rows-2">
         {rooms.map((room, index) => (
           <div
             key={room.id}
             className={cn(
               "relative overflow-hidden rounded-lg cursor-pointer group",
-              index === 0 ? "md:col-span-2 md:row-span-2 aspect-[16/9]" : "aspect-[4/3]"
+              index === 0 
+                ? "md:col-span-2 md:row-span-2 aspect-[16/9] md:aspect-auto md:h-full" 
+                : "aspect-[4/3]"
             )}
             onClick={() => openGallery(room)}
           >

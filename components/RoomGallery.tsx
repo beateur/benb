@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogClose } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from '@/components/Image';
@@ -56,14 +56,11 @@ export function RoomGallery({ isOpen, onClose, room }: RoomGalleryProps) {
           <h2 className="text-2xl font-semibold">
             {allImages[currentIndex].title}
           </h2>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-full"
-            onClick={onClose}
-          >
-            <X className="h-6 w-6" />
-          </Button>
+          <DialogClose asChild>
+            <Button variant="ghost" size="icon" className="rounded-full">
+              <X className="h-6 w-6" />
+            </Button>
+          </DialogClose>
         </div>
 
         <div className="h-full overflow-y-auto">

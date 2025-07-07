@@ -25,25 +25,25 @@ export const useProperties = (filters?: PropertyFilters) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const fetchProperties = async () => {
+    try {
+      setLoading(true);
+      const data = await getProperties(filters);
+      setProperties(data);
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Une erreur est survenue');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     console.log("ça boucle 23")
-    const fetchProperties = async () => {
-      try {
-        setLoading(true);
-        const data = await getProperties(filters);
-        setProperties(data);
-        setError(null);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Une erreur est survenue');
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchProperties();
   }, [JSON.stringify(filters)]);
 
-  return { properties, loading, error, refetch: () => fetchProperties() };
+  return { properties, loading, error, refetch: fetchProperties };
 };
 
 // Hook pour récupérer une propriété spécifique
@@ -81,25 +81,25 @@ export const useReservations = (filters?: ReservationFilters) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const fetchReservations = async () => {
+    try {
+      setLoading(true);
+      const data = await getReservations(filters);
+      setReservations(data);
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Une erreur est survenue');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     console.log("ça boucle 25")
-    const fetchReservations = async () => {
-      try {
-        setLoading(true);
-        const data = await getReservations(filters);
-        setReservations(data);
-        setError(null);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Une erreur est survenue');
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchReservations();
   }, [JSON.stringify(filters)]);
 
-  return { reservations, loading, error, refetch: () => fetchReservations() };
+  return { reservations, loading, error, refetch: fetchReservations };
 };
 
 // Hook pour récupérer la disponibilité

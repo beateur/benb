@@ -105,8 +105,8 @@ export default function PricesPage() {
           id: docSnap.id,
           basePrice: data.pricePerNight || 450,
           currency: data.currency || 'EUR',
-          cleaningFee: data.cleaningFee || 75,
-          serviceFeePercentage: data.serviceFeePercentage || 12,
+          cleaningFee: data.cleaningFee || 200,
+          serviceFeePercentage: data.serviceFeePercentage || 0,
           taxPercentage: data.taxPercentage || 5.5,
           securityDeposit: data.securityDeposit || 500,
           minimumStay: data.minimumStay || 3,
@@ -127,8 +127,8 @@ export default function PricesPage() {
           id: selectedProperty,
           basePrice: 450,
           currency: 'EUR',
-          cleaningFee: 75,
-          serviceFeePercentage: 12,
+          cleaningFee: 200,
+          serviceFeePercentage: 0,
           taxPercentage: 5.5,
           securityDeposit: 500,
           minimumStay: 3,
@@ -270,10 +270,10 @@ export default function PricesPage() {
     if (!pricingData) return 0;
     
     const subtotal = nights * basePrice;
-    const serviceFee = Math.round(subtotal * (pricingData.serviceFeePercentage / 100));
-    const taxes = Math.round((subtotal + pricingData.cleaningFee + serviceFee) * (pricingData.taxPercentage / 100));
+    const serviceFee = 0; // Suppression des frais de service
+    const touristTax = nights * 2 * 2; // 2€ par personne par nuit (2 personnes par défaut)
     
-    return subtotal + pricingData.cleaningFee + serviceFee + taxes;
+    return subtotal + pricingData.cleaningFee + touristTax;
   };
 
   if (!mounted || loading) {
@@ -403,6 +403,7 @@ export default function PricesPage() {
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
+                      {/* Champ frais de service masqué
                       <div>
                         <Label htmlFor="serviceFee">Frais de service (%)</Label>
                         <div className="relative">
@@ -419,21 +420,25 @@ export default function PricesPage() {
                           </span>
                         </div>
                       </div>
+                      */}
                       <div>
-                        <Label htmlFor="taxPercentage">Taxes (%)</Label>
+                        <Label htmlFor="taxPercentage">Taxe de séjour (€/pers./nuit)</Label>
                         <div className="relative">
                           <Input
                             id="taxPercentage"
                             type="number"
-                            value={pricingData.taxPercentage}
-                            onChange={(e) => updateField('taxPercentage', parseFloat(e.target.value) || 0)}
-                            className="pr-12"
+                            value={2}
+                            readOnly
+                            className="pr-12 bg-muted"
                             step="0.1"
                           />
                           <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-                            %
+                            €
                           </span>
                         </div>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Taxe fixe réglementaire de Saint-Florent
+                        </p>
                       </div>
                     </div>
 
@@ -492,7 +497,7 @@ export default function PricesPage() {
                       <h4 className="font-medium mb-3">Exemple de calcul</h4>
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
-                          <span>3 nuits × {pricingData.basePrice}€</span>
+                          <span>3 nuits TTC × {pricingData.basePrice}€</span>
                           <span>{3 * pricingData.basePrice}€</span>
                         </div>
                         <div className="flex justify-between">
@@ -500,12 +505,8 @@ export default function PricesPage() {
                           <span>{pricingData.cleaningFee}€</span>
                         </div>
                         <div className="flex justify-between">
-                          <span>Frais de service ({pricingData.serviceFeePercentage}%)</span>
-                          <span>{Math.round(3 * pricingData.basePrice * (pricingData.serviceFeePercentage / 100))}€</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Taxes ({pricingData.taxPercentage}%)</span>
-                          <span>{Math.round(calculateTotalPrice(3, pricingData.basePrice) * (pricingData.taxPercentage / 100) / (1 + pricingData.taxPercentage / 100))}€</span>
+                          <span>Taxe de séjour (2 pers. × 3 nuits)</span>
+                          <span>{3 * 2 * 2}€</span>
                         </div>
                         <div className="flex justify-between font-semibold border-t pt-2">
                           <span>Total</span>
@@ -777,7 +778,7 @@ export default function PricesPage() {
                       <h4 className="font-semibold mb-3">Weekend (2 nuits)</h4>
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
-                          <span>2 × {pricingData.basePrice}€</span>
+                          <span>2 nuits TTC × {pricingData.basePrice}€</span>
                           <span>{2 * pricingData.basePrice}€</span>
                         </div>
                         <div className="flex justify-between">
@@ -785,12 +786,8 @@ export default function PricesPage() {
                           <span>{pricingData.cleaningFee}€</span>
                         </div>
                         <div className="flex justify-between">
-                          <span>Frais de service</span>
-                          <span>{Math.round(2 * pricingData.basePrice * (pricingData.serviceFeePercentage / 100))}€</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Taxes</span>
-                          <span>{Math.round(calculateTotalPrice(2, pricingData.basePrice) * (pricingData.taxPercentage / 100) / (1 + pricingData.taxPercentage / 100))}€</span>
+                          <span>Taxe de séjour (2 pers. × 2 nuits)</span>
+                          <span>{2 * 2 * 2}€</span>
                         </div>
                         <div className="flex justify-between font-semibold border-t pt-2">
                           <span>Total</span>
@@ -815,10 +812,6 @@ export default function PricesPage() {
                           <span>Frais de ménage</span>
                           <span>{pricingData.cleaningFee}€</span>
                         </div>
-                        <div className="flex justify-between">
-                          <span>Frais de service</span>
-                          <span>{Math.round((7 * pricingData.basePrice * (1 - pricingData.weeklyDiscount / 100)) * (pricingData.serviceFeePercentage / 100))}€</span>
-                        </div>
                         <div className="flex justify-between font-semibold border-t pt-2">
                           <span>Total</span>
                           <span>{calculateTotalPrice(7, pricingData.basePrice * (1 - pricingData.weeklyDiscount / 100))}€</span>
@@ -841,10 +834,6 @@ export default function PricesPage() {
                         <div className="flex justify-between">
                           <span>Frais de ménage</span>
                           <span>{pricingData.cleaningFee}€</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Frais de service</span>
-                          <span>{Math.round((30 * pricingData.basePrice * (1 - pricingData.monthlyDiscount / 100)) * (pricingData.serviceFeePercentage / 100))}€</span>
                         </div>
                         <div className="flex justify-between font-semibold border-t pt-2">
                           <span>Total</span>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Property } from '@/src/types/firestore';
 import Hero from '@/components/Hero';
@@ -10,7 +10,7 @@ import Map from '@/components/Map';
 import Events from '@/components/Events';
 import Reservation from '@/components/Reservation';
 
-export default function Home() {
+function HomeContent() {
   const searchParams = useSearchParams();
   const propertyId = searchParams.get('propertyId') || "default";
   const [mounted, setMounted] = useState(false);
@@ -173,5 +173,13 @@ export default function Home() {
         ))}
       </div>
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<div>Chargement...</div>}>
+      <HomeContent />
+    </Suspense>
   );
 }

@@ -51,7 +51,7 @@ interface BlockingForm {
   title: string;
   start: Date;
   end: Date;
-  type: 'blocked' | 'maintenance' | 'special_rate';
+  type: 'blocked' | 'maintenance' | 'reserved' | 'special_rate';
   price?: number;
   notes?: string;
 }

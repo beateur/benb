@@ -60,12 +60,12 @@ const DEFAULT_EVENTS: Event[] = [
   },
   {
     id: '2',
-    title: 'Marché Provençal de Saint-Tropez',
+    title: 'Marché Provençal de Saint-Florent',
     description: 'Marché traditionnel avec produits locaux, artisanat et spécialités provençales.',
     type: 'culture',
     startDate: '2024-06-01',
     endDate: '2024-09-30',
-    location: 'Place des Lices, Saint-Tropez',
+    location: 'Place des Lices, Saint-Florent',
     distance: '2 km',
     price: 'Gratuit'
   },

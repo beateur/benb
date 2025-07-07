@@ -78,6 +78,14 @@ export default function Reservation({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [confirmationOpen, setConfirmationOpen] = useState(false);
   const [reservationId, setReservationId] = useState<string>('');
+  
+  // Variables temporaires pour la confirmation
+  const [tempBookingData, setTempBookingData] = useState<{
+    nights: number;
+    numberOfGuests: number;
+    total: number;
+    selectedRange?: { from?: Date; to?: Date };
+  } | null>(null);
 
   const {
     register,
@@ -120,10 +128,9 @@ export default function Reservation({
     : 0;
   
   const subtotal = nights * pricePerNight;
-  const cleaningFee = 75;
-  const serviceFee = Math.round(subtotal * 0.12);
-  const taxes = Math.round((subtotal + cleaningFee + serviceFee) * 0.055);
-  const total = subtotal + cleaningFee + serviceFee + taxes;
+  const cleaningFee = 200;
+  const touristTax = nights * numberOfGuests * 2; // 2€ par personne par nuit (taxe de séjour)
+  const total = subtotal + cleaningFee + touristTax;
 
   // Check if date is unavailable
   const isDateUnavailable = (date: Date) => {
@@ -164,6 +171,14 @@ export default function Reservation({
     setIsSubmitting(true);
 
     try {
+      // 💾 Sauvegarder les données avant le reset
+      const bookingData = {
+        nights,
+        numberOfGuests: data.numberOfGuests,
+        total,
+        selectedRange: { ...selectedRange }
+      };
+
       const reservationData = {
         propertyId,
         userId: 'guest', // Pour les réservations sans compte
@@ -190,11 +205,13 @@ export default function Reservation({
       console.log('✅ Réservation créée avec succès:', docRef.id);
       
       setReservationId(docRef.id);
+      setTempBookingData(bookingData); // 💾 Sauvegarder pour la modal
       setConfirmationOpen(true);
+      
+      // Reset après sauvegarde
       reset();
       setSelectedRange(undefined);
       
-      toast.success('Réservation créée avec succès !');
     } catch (error: any) {
       console.error('❌ Erreur détaillée lors de la création:', error);
       
@@ -468,7 +485,7 @@ export default function Reservation({
                       
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
-                          <span>{pricePerNight}€ × {nights} nuit{nights > 1 ? 's' : ''}</span>
+                          <span>{pricePerNight}€ TTC × {nights} nuit{nights > 1 ? 's' : ''}</span>
                           <span>{subtotal}€</span>
                         </div>
                         <div className="flex justify-between">
@@ -476,12 +493,23 @@ export default function Reservation({
                           <span>{cleaningFee}€</span>
                         </div>
                         <div className="flex justify-between">
-                          <span>Frais de service</span>
-                          <span>{serviceFee}€</span>
+                          <span>Taxe de séjour ({numberOfGuests} pers. × {nights} nuits)</span>
+                          <span>{touristTax}€</span>
                         </div>
-                        <div className="flex justify-between">
-                          <span>Taxes</span>
-                          <span>{taxes}€</span>
+                      </div>
+
+                      {/* Encadré informatif taxe de séjour */}
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                        <div className="flex items-start gap-2">
+                          <AlertCircle className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                          <div className="text-sm text-blue-800">
+                            <p className="font-medium mb-1">À propos de la taxe de séjour</p>
+                            <p className="text-xs leading-relaxed">
+                              Taxe municipale obligatoire collectée pour le compte de la commune de Saint-Florent. 
+                              <strong> 2€ par personne et par nuit</strong>, conformément à la réglementation française. 
+                              Les enfants de moins de 18 ans en sont exemptés.
+                            </p>
+                          </div>
                         </div>
                       </div>
 
@@ -542,21 +570,29 @@ export default function Reservation({
                 <span className="text-muted-foreground">Numéro de réservation :</span>
                 <span className="font-mono">{reservationId.slice(-8).toUpperCase()}</span>
               </div>
-              {selectedRange?.from && selectedRange?.to && (
+              {tempBookingData?.selectedRange?.from && tempBookingData?.selectedRange?.to && (
                 <>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Arrivée :</span>
-                    <span>{format(selectedRange.from, 'dd/MM/yyyy', { locale: fr })}</span>
+                    <span>{format(tempBookingData.selectedRange.from, 'dd/MM/yyyy', { locale: fr })}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Départ :</span>
-                    <span>{format(selectedRange.to, 'dd/MM/yyyy', { locale: fr })}</span>
+                    <span>{format(tempBookingData.selectedRange.to, 'dd/MM/yyyy', { locale: fr })}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Durée :</span>
+                    <span>{tempBookingData.nights} nuit{tempBookingData.nights > 1 ? 's' : ''}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Personnes :</span>
+                    <span>{tempBookingData.numberOfGuests}</span>
                   </div>
                 </>
               )}
               <div className="flex justify-between font-semibold">
                 <span>Total :</span>
-                <span>{total}€</span>
+                <span>{tempBookingData?.total || total}€</span>
               </div>
             </div>
 

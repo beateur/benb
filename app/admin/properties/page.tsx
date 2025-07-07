@@ -58,7 +58,7 @@ export default function PropertiesPage() {
       id: '1',
       name: 'Villa Méditerranéenne d\'Exception',
       type: 'Villa',
-      location: 'Saint-Tropez, France',
+      location: 'Saint-Florent, France',
       pricePerNight: 450,
       maxGuests: 8,
       status: 'active',

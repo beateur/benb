@@ -14,8 +14,34 @@ import {
   Clock,
   ExternalLink,
   Compass,
-  Route
+  Route,
+  Sailboat
 } from 'lucide-react';
+import 'leaflet/dist/leaflet.css';
+import { MapContainer, TileLayer, Marker } from 'react-leaflet';
+import L from 'leaflet';
+
+// Configuration des icônes Leaflet pour éviter les erreurs 404
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+});
+
+// CSS pour masquer le drapeau ukrainien dans Leaflet
+if (typeof document !== 'undefined') {
+  const style = document.createElement('style');
+  style.textContent = `
+    .leaflet-attribution-flag { 
+      display: none !important; 
+    }
+    .leaflet-control-attribution {
+      display: none !important;
+    }
+  `;
+  document.head.appendChild(style);
+}
 
 interface MapProps {
   propertyId?: string;
@@ -36,16 +62,11 @@ export default function Map({
   propertyId = "default",
   latitude = 43.2681,
   longitude = 6.6401,
-  address = "123 Avenue de la Côte d'Azur",
-  city = "Saint-Tropez",
+  address = "",
+  city = "Saint-Florent",
   country = "France",
   nearbyAttractions = [
-    { name: "Plage de la Roya", distance: "1 km", type: "beach", description: "parking disponible" },
-    { name: "Port de Saint-Tropez", distance: "1.8 km", type: "culture", description: "Port historique et ses yachts" },
-    { name: "Citadelle de Saint-Tropez", distance: "2.1 km", type: "culture", description: "Musée maritime" },
-    { name: "Club 55", distance: "2.7 km", type: "restaurant", description: "Restaurant de plage légendaire" },
-    { name: "Marché de Saint-Tropez", distance: "1.9 km", type: "shopping", description: "Marché provençal traditionnel" },
-    { name: "Sentier du littoral", distance: "500 m", type: "nature", description: "Randonnée côtière" }
+    { name: "Plage de la Roya", distance: "1 km", type: "beach", description: "parking disponible" }
   ]
 }: MapProps) {
   const [mounted, setMounted] = useState(false);
@@ -110,7 +131,7 @@ export default function Map({
             Emplacement privilégié
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Découvrez l'environnement exceptionnel de cette propriété, idéalement située au cœur de la Côte d'Azur.
+            Découvrez l'environnement exceptionnel de cette propriété, idéalement située au cœur de la berge de Saint-Florent.
           </p>
         </motion.div>
 
@@ -125,8 +146,7 @@ export default function Map({
           >
             <Card className="overflow-hidden border-0 shadow-xl h-full">
               <CardContent className="p-0 h-full">
-                <div className="relative h-full min-h-[600px] bg-muted">
-                  {/* Map Placeholder with Loading Animation */}
+                <div className="relative h-full min-h-[600px]">
                   {!mapLoaded ? (
                     <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100">
                       <div className="text-center">
@@ -136,80 +156,52 @@ export default function Map({
                           className="w-12 h-12 border-4 border-blue-200 border-t-blue-500 rounded-full mx-auto mb-4"
                         />
                         <p className="text-blue-600 font-medium">Chargement de la carte...</p>
+                        <p className="text-blue-600 font-medium">Chargement de la carte...</p>
                       </div>
                     </div>
                   ) : (
-                    /* Interactive Map Placeholder */
-                    <div className="relative w-full h-full bg-gradient-to-br from-blue-100 via-green-50 to-blue-50">
-                      {/* Simulated Map Background */}
-                      <div className="absolute inset-0 opacity-20">
-                        <div className="w-full h-full bg-gradient-to-br from-blue-200 to-green-200" />
-                        {/* Simulated Roads */}
-                        <div className="absolute top-1/3 left-0 right-0 h-1 bg-gray-300 transform rotate-12" />
-                        <div className="absolute top-2/3 left-0 right-0 h-1 bg-gray-300 transform -rotate-6" />
-                        <div className="absolute left-1/4 top-0 bottom-0 w-1 bg-gray-300 transform rotate-3" />
-                      </div>
-
-                      {/* Property Marker */}
-                      <motion.div
-                        className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        transition={{ delay: 0.5, type: "spring", stiffness: 200 }}
-                      >
-                        <div className="relative">
-                          <div className="w-8 h-8 bg-red-500 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
-                            <MapPin className="h-4 w-4 text-white" />
-                          </div>
-                          <motion.div
-                            className="absolute -top-2 -left-2 w-12 h-12 bg-red-500/20 rounded-full"
-                            animate={{ scale: [1, 1.5, 1] }}
-                            transition={{ duration: 2, repeat: Infinity }}
+                    <>
+                      <div className="relative w-full h-full">
+                        <MapContainer
+                          center={[latitude, longitude]}
+                          zoom={13}
+                          style={{ height: '100%', width: '100%' }}
+                          zoomControl={false}
+                          attributionControl={false}
+                        >
+                          <TileLayer
+                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                            attribution=""
                           />
+                          <Marker position={[latitude, longitude]} />
+                        </MapContainer>
+                        
+                        {/* Map Controls - Repositionnés avec z-index très élevé */}
+                        <div 
+                          className="absolute top-4 right-4 flex flex-col gap-2"
+                          style={{ zIndex: 9999 }}
+                        >
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            className="bg-white/95 backdrop-blur-sm shadow-lg border border-gray-200 hover:bg-white hover:shadow-xl transition-all"
+                            onClick={openInMaps}
+                          >
+                            <ExternalLink className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            className="bg-white/95 backdrop-blur-sm shadow-lg border border-gray-200 hover:bg-white hover:shadow-xl transition-all"
+                            onClick={getDirections}
+                          >
+                            <Navigation className="h-4 w-4" />
+                          </Button>
                         </div>
-                      </motion.div>
-
-                      {/* Nearby Points */}
-                      {[
-                        { x: '30%', y: '40%', color: 'bg-blue-500' },
-                        { x: '70%', y: '30%', color: 'bg-green-500' },
-                        { x: '60%', y: '70%', color: 'bg-orange-500' },
-                        { x: '25%', y: '65%', color: 'bg-purple-500' }
-                      ].map((point, index) => (
-                        <motion.div
-                          key={index}
-                          className="absolute transform -translate-x-1/2 -translate-y-1/2"
-                          style={{ left: point.x, top: point.y }}
-                          initial={{ scale: 0, opacity: 0 }}
-                          animate={{ scale: 1, opacity: 1 }}
-                          transition={{ delay: 1 + index * 0.2 }}
-                        >
-                          <div className={`w-3 h-3 ${point.color} rounded-full border-2 border-white shadow-md`} />
-                        </motion.div>
-                      ))}
-
-                      {/* Map Controls */}
-                      <div className="absolute top-4 right-4 flex flex-col gap-2">
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          className="bg-white/90 backdrop-blur-sm shadow-md"
-                          onClick={openInMaps}
-                        >
-                          <ExternalLink className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          className="bg-white/90 backdrop-blur-sm shadow-md"
-                          onClick={getDirections}
-                        >
-                          <Navigation className="h-4 w-4" />
-                        </Button>
                       </div>
-
+                      
                       {/* Address Overlay */}
-                      <div className="absolute bottom-4 left-4 right-4">
+                      <div className="absolute bottom-4 left-4 right-4" style={{ zIndex: 1000 }}>
                         <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-lg">
                           <CardContent className="p-4">
                             <div className="flex items-start gap-3">
@@ -232,7 +224,7 @@ export default function Map({
                           </CardContent>
                         </Card>
                       </div>
-                    </div>
+                    </>
                   )}
                 </div>
               </CardContent>
@@ -259,8 +251,9 @@ export default function Map({
                 <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
                   <Car className="h-5 w-5 text-blue-600" />
                   <div>
-                    <p className="font-medium">En Ferry</p>
-                    <p className="text-sm text-muted-foreground">Arrivée à Bastia</p>
+
+                                        <p className="font-medium">Location de voiture</p>
+                    <p className="text-sm text-muted-foreground">À l'aéroport et au port de Bastia</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
@@ -271,10 +264,10 @@ export default function Map({
                   </div>
                 </div>
                 <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-                  <Train className="h-5 w-5 text-purple-600" />
+                  <Sailboat className="h-5 w-5 text-purple-600" />
                   <div>
-                    <p className="font-medium">Location de voiture</p>
-                    <p className="text-sm text-muted-foreground">À l'aéroport et au port de Bastia</p>
+                    <p className="font-medium">En Ferry</p>
+                    <p className="text-sm text-muted-foreground">Arrivée à Bastia</p>
                   </div>
                 </div>
               </CardContent>
