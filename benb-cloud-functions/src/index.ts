@@ -21,8 +21,7 @@ setGlobalOptions({maxInstances: 10});
  * Interface pour les données de réservation
  */
 interface ReservationData {
-  email: string;
-  name: string;
+  guestEmail: string;
   guestName: string;
   propertyName?: string;
   checkInDate?: any;
@@ -36,7 +35,7 @@ interface ReservationData {
  * Génère le template HTML de l'email de confirmation
  */
 function generateEmailTemplate(data: ReservationData): string {
-  const guestName = data.guestName || data.name || "Cher client";
+  const guestName = data.guestName || "Cher client";
   const propertyName = data.propertyName || "notre propriété";
 
   return `
@@ -209,25 +208,25 @@ export const sendReservationConfirmation = onDocumentCreated(
         return;
       }
 
-      const {email, name, guestName} = reservationData;
+      const {guestEmail, guestName} = reservationData;
 
       // Validation des champs requis
-      if (!email) {
+      if (!guestEmail) {
         logger.error(`[Reservation ${reservationId}] Email manquant`, {
           reservationData,
         });
         return;
       }
 
-      if (!name && !guestName) {
+      if (!guestName) {
         logger.warn(`[Reservation ${reservationId}] Nom du client manquant`, {
-          email,
+          guestEmail,
         });
       }
 
       logger.info(`[Reservation ${reservationId}] Préparation de l'email`, {
-        email,
-        guestName: guestName || name,
+        guestEmail,
+        guestName,
       });
 
       // Initialisation du client Resend avec la clé API sécurisée
@@ -238,8 +237,8 @@ export const sendReservationConfirmation = onDocumentCreated(
 
       // Envoi de l'email de confirmation
       const {data, error} = await resend.emails.send({
-        from: "La Villa Roya <noreply@resend.dev>", // Remplacer par votre domaine vérifié
-        to: email,
+        from: "La Villa Roya <noreply@villaroya.space>", // Remplacer par votre domaine vérifié
+        to: guestEmail,
         subject: `Confirmation de votre demande de réservation - ${reservationData.propertyName || "La Villa Roya"}`,
         html: htmlContent,
       });
@@ -247,15 +246,15 @@ export const sendReservationConfirmation = onDocumentCreated(
       if (error) {
         logger.error(`[Reservation ${reservationId}] Erreur lors de l'envoi`, {
           error: error.message,
-          email,
+          guestEmail,
         });
         throw new Error(`Resend API error: ${error.message}`);
       }
 
       logger.info(`[Reservation ${reservationId}] Email envoyé avec succès`, {
         emailId: data?.id,
-        recipient: email,
-        guestName: guestName || name,
+        recipient: guestEmail,
+        guestName,
       });
 
       return {
