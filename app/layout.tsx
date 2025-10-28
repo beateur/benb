@@ -7,12 +7,12 @@ import Layout from '@/components/Layout';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Villa Ben & Bella - Location de luxe en Tunisie',
-  description: 'Découvrez notre villa de prestige avec piscine privée, terrasses panoramiques et vue sur les montagnes. Location haut de gamme pour vos vacances en Tunisie.',
-  keywords: ['villa luxe tunisie', 'location vacances tunisie', 'piscine privée', 'villa avec vue', 'location haut de gamme', 'saint-florent', 'villa moderne', 'vacances luxe'],
-  authors: [{ name: 'Villa Ben & Bella' }],
-  creator: 'Villa Ben & Bella',
-  publisher: 'Villa Ben & Bella',
+  title: 'VillaRoya - Location de luxe en Corse',
+  description: 'Découvrez notre villa de prestige avec piscine privée, terrasses panoramiques et vue sur les montagnes. Location haut de gamme pour vos vacances en Corse.',
+  keywords: ['villa luxe corse', 'location vacances corse', 'piscine privée', 'villa avec vue', 'location haut de gamme', 'saint-florent', 'villa moderne', 'vacances luxe'],
+  authors: [{ name: 'VillaRoya' }],
+  creator: 'VillaRoya',
+  publisher: 'VillaRoya',
   robots: {
     index: true,
     follow: true,
@@ -27,22 +27,22 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'fr_FR',
     url: 'https://benb-74435.web.app',
-    siteName: 'Villa Ben & Bella',
-    title: 'Villa Ben & Bella - Location de luxe en Tunisie',
-    description: 'Villa de prestige avec piscine privée, 5 chambres, terrasses panoramiques. Location haut de gamme pour des vacances inoubliables en Tunisie.',
+    siteName: 'VillaRoya',
+    title: 'VillaRoya - Location de luxe en Corse',
+    description: 'Villa de prestige avec piscine privée, 5 chambres, terrasses panoramiques. Location haut de gamme pour des vacances inoubliables en Corse.',
     images: [
       {
         url: 'https://benb-74435.web.app/assets/images/CoverHero.avif',
         width: 1200,
         height: 630,
-        alt: 'Villa Ben & Bella - Vue panoramique',
+        alt: 'VillaRoya - Vue panoramique en Corse',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Villa Ben & Bella - Location de luxe',
-    description: 'Villa de prestige avec piscine privée en Tunisie. 5 chambres, vue panoramique, équipements haut de gamme.',
+    title: 'VillaRoya - Location de luxe en Corse',
+    description: 'Villa de prestige avec piscine privée en Corse. 5 chambres, vue panoramique, équipements haut de gamme.',
     images: ['https://benb-74435.web.app/assets/images/CoverHero.avif'],
   },
   icons: {
