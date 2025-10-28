@@ -29,7 +29,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
-// CSS pour masquer le drapeau ukrainien dans Leaflet
+// CSS pour masquer le drapeau ukrainien dans Leaflet et gérer le z-index
 if (typeof document !== 'undefined') {
   const style = document.createElement('style');
   style.textContent = `
@@ -38,6 +38,16 @@ if (typeof document !== 'undefined') {
     }
     .leaflet-control-attribution {
       display: none !important;
+    }
+    .leaflet-container {
+      z-index: 1 !important;
+    }
+    .leaflet-pane {
+      z-index: 1 !important;
+    }
+    .leaflet-top,
+    .leaflet-bottom {
+      z-index: 10 !important;
     }
   `;
   document.head.appendChild(style);
@@ -131,7 +141,7 @@ export default function Map({
             Emplacement privilégié
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Découvrez l'environnement exceptionnel de cette propriété, idéalement située au cœur de la berge de Saint-Florent.
+            Découvrez l'environnement exceptionnel de cette propriété, idéalement située au cœur de la baie de Saint-Florent.
           </p>
         </motion.div>
 
@@ -161,11 +171,11 @@ export default function Map({
                     </div>
                   ) : (
                     <>
-                      <div className="relative w-full h-full">
+                      <div className="relative w-full h-full" style={{ zIndex: 1 }}>
                         <MapContainer
                           center={[latitude, longitude]}
                           zoom={13}
-                          style={{ height: '100%', width: '100%' }}
+                          style={{ height: '100%', width: '100%', zIndex: 1 }}
                           zoomControl={false}
                           attributionControl={false}
                         >
@@ -179,7 +189,7 @@ export default function Map({
                         {/* Map Controls - Repositionnés avec z-index très élevé */}
                         <div 
                           className="absolute top-4 right-4 flex flex-col gap-2"
-                          style={{ zIndex: 9999 }}
+                          style={{ zIndex: 10 }}
                         >
                           <Button
                             size="sm"

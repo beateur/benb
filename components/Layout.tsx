@@ -42,7 +42,6 @@ export default function Layout({
   canonical
 }: LayoutProps) {
   const router = useRouter();
-  const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const fullTitle = title === "Location de Vacances Premium" ? title : `${title} | Location de Vacances Premium`;
@@ -51,21 +50,28 @@ export default function Layout({
 
   // Navigation items
   const navItems: NavItem[] = [
-    { href: '/', label: 'Accueil', icon: <Home className="h-4 w-4" /> },
-    { href: '/properties', label: 'Propriétés', icon: <MapPin className="h-4 w-4" /> },
-    { href: '/reservations', label: 'Réservations', icon: <Calendar className="h-4 w-4" /> }
+    { href: '#hero', label: 'Accueil', icon: <Home className="h-4 w-4" /> },
+    { href: '#villa', label: 'À propos', icon: <MapPin className="h-4 w-4" /> },
+    { href: '#decouverte', label: 'Galerie', icon: <MapPin className="h-4 w-4" /> },
+    { href: '#reservation', label: 'Réserver', icon: <Calendar className="h-4 w-4" /> }
   ];
 
-  // Handle scroll effect
-  useEffect(() => {
-    console.log("ça boucle 39")
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
+  // Smooth scroll to section
+  const scrollToSection = (href: string) => {
+    const sectionId = href.replace('#', '');
+    const element = document.getElementById(sectionId);
+    if (element) {
+      const navbarHeight = 80; // Hauteur de la navbar
+      const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+      const offsetPosition = elementPosition - navbarHeight;
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+    setMobileMenuOpen(false);
+  };
 
   // Close mobile menu on route change
   useEffect(() => {
@@ -146,11 +152,7 @@ export default function Layout({
       <div className="min-h-screen flex flex-col bg-background">
         {/* Header */}
         <header 
-          className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-            isScrolled 
-              ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-lg border-b border-border/50' 
-              : 'bg-transparent'
-          }`}
+          className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-md border-b border-gray-200"
           role="banner"
         >
           <div className="container mx-auto px-4">
@@ -166,24 +168,24 @@ export default function Layout({
                 </div>
                 <div className="hidden sm:block">
                   <h1 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">
-                    La Ville Roya
+                    La Villa Roya
                   </h1>
-                  <p className="text-xs text-muted-foreground">Locations d'exception</p>
+                  <p className="text-xs text-muted-foreground">Vos vacances de rêves</p>
                 </div>
               </Link>
 
               {/* Desktop Navigation */}
               <nav className="hidden lg:flex items-center gap-8" role="navigation" aria-label="Navigation principale">
                 {navItems.map((item) => (
-                  <Link
+                  <button
                     key={item.href}
-                    href={item.href}
+                    onClick={() => scrollToSection(item.href)}
                     className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md"
                     aria-label={item.label}
                   >
                     {item.icon}
                     {item.label}
-                  </Link>
+                  </button>
                 ))}
               </nav>
 
@@ -227,14 +229,13 @@ export default function Layout({
                         <ul className="space-y-2">
                           {navItems.map((item) => (
                             <li key={item.href}>
-                              <Link
-                                href={item.href}
-                                className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                                onClick={() => setMobileMenuOpen(false)}
+                              <button
+                                onClick={() => scrollToSection(item.href)}
+                                className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                               >
                                 {item.icon}
                                 {item.label}
-                              </Link>
+                              </button>
                             </li>
                           ))}
                         </ul>
@@ -253,7 +254,7 @@ export default function Layout({
         </main>
 
         {/* Footer */}
-        <footer className="bg-slate-50 dark:bg-slate-900 border-t border-border" role="contentinfo">
+        <footer className="bg-slate-50 border-t border-gray-200" role="contentinfo">
           <div className="container mx-auto px-4 py-12">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {/* Company Info */}

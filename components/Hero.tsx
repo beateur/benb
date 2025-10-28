@@ -164,7 +164,7 @@ export default function Hero({
   }
 
   return (
-    <section className="relative h-screen flex items-center justify-center overflow-hidden">
+    <section id="hero" className="relative h-screen flex items-center justify-center overflow-hidden">
       {/* Background Media with Parallax */}
       <BackgroundMedia
         mediaType={mediaType}

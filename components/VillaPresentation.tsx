@@ -8,7 +8,7 @@ interface VillaPresentationProps {
 
 export default function VillaPresentation({ propertyId = "default" }: VillaPresentationProps) {
   return (
-    <section id="villa-presentation" className="py-20 bg-background">
+    <section id="villa" className="py-20 bg-background">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <motion.div

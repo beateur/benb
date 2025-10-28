@@ -271,12 +271,12 @@ export default function Contact({ propertyId = "default" }: ContactProps) {
                 </div>
                 <div className="flex justify-between items-center py-2">
                   <span className="font-medium">Dimanche</span>
-                  <Badge variant="secondary" className="bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
+                  <Badge variant="secondary" className="bg-red-100 text-red-800">
                     Fermé
                   </Badge>
                 </div>
-                <div className="mt-4 p-3 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg">
-                  <p className="text-sm text-green-800 dark:text-green-200">
+                <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                  <p className="text-sm text-green-800">
                     <strong>Service d'urgence 24h/7j</strong> disponible pour nos clients en séjour
                   </p>
                 </div>
@@ -294,16 +294,16 @@ export default function Contact({ propertyId = "default" }: ContactProps) {
           >
             {/* Quick WhatsApp Contact */}
             {contactLinks.find(link => link.type === 'whatsapp') && (
-              <Card className="border-0 shadow-lg bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 border-green-200 dark:border-green-800">
+              <Card className="border-0 shadow-lg bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
                 <CardContent className="p-6">
                   <div className="text-center">
                     <div className="inline-flex items-center justify-center w-16 h-16 bg-green-500 rounded-full mb-4 animate-pulse">
                       <MessageCircle className="h-8 w-8 text-white" />
                     </div>
-                    <h3 className="text-lg font-semibold mb-2 text-green-800 dark:text-green-200">
+                    <h3 className="text-lg font-semibold mb-2 text-green-800">
                       Contact immédiat
                     </h3>
-                    <p className="text-sm text-green-700 dark:text-green-300 mb-4">
+                    <p className="text-sm text-green-700 mb-4">
                       Obtenez une réponse rapide via WhatsApp
                     </p>
                     <Button
@@ -350,31 +350,31 @@ export default function Contact({ propertyId = "default" }: ContactProps) {
             </Card>
 
             {/* Response Time */}
-            <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 border-blue-200 dark:border-blue-800">
+            <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
               <CardContent className="p-6">
                 <div className="text-center">
                   <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-500 rounded-full mb-4">
                     <Clock className="h-6 w-6 text-white" />
                   </div>
-                  <h3 className="font-semibold mb-2 text-blue-800 dark:text-blue-200">
+                  <h3 className="font-semibold mb-2 text-blue-800">
                     Temps de réponse
                   </h3>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-blue-700 dark:text-blue-300">WhatsApp:</span>
-                      <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                      <span className="text-blue-700">WhatsApp:</span>
+                      <Badge variant="secondary" className="bg-green-100 text-green-800">
                         &lt; 5 min
                       </Badge>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-blue-700 dark:text-blue-300">Email:</span>
-                      <Badge variant="secondary" className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                      <span className="text-blue-700">Email:</span>
+                      <Badge variant="secondary" className="bg-blue-100 text-blue-800">
                         &lt; 2h
                       </Badge>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-blue-700 dark:text-blue-300">Téléphone:</span>
-                      <Badge variant="secondary" className="bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200">
+                      <span className="text-blue-700">Téléphone:</span>
+                      <Badge variant="secondary" className="bg-orange-100 text-orange-800">
                         Immédiat
                       </Badge>
                     </div>
