@@ -181,6 +181,7 @@ export default function Reservation({
 
       const reservationData = {
         propertyId,
+        propertyName, // ✅ Ajout du nom de la propriété
         userId: 'guest', // Pour les réservations sans compte
         guestName: data.guestName,
         guestEmail: data.guestEmail,
