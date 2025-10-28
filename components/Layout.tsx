@@ -12,8 +12,7 @@ import {
   Mail, 
   Instagram,
   Menu,
-  X,
-  Shield
+  X
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
@@ -188,22 +187,8 @@ export default function Layout({
                 ))}
               </nav>
 
-              {/* Admin Access & Mobile Menu */}
+              {/* Mobile Menu */}
               <div className="flex items-center gap-4">
-                {/* Admin Button */}
-                <Link href="/admin/login">
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    className="hidden sm:flex items-center gap-2 hover:bg-primary hover:text-primary-foreground transition-colors"
-                    aria-label="Accès administrateur"
-                  >
-                    <Shield className="h-4 w-4" />
-                    Admin
-                  </Button>
-                </Link>
-
-                {/* Mobile Menu */}
                 <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
                   <SheetTrigger asChild>
                     <Button
@@ -252,16 +237,6 @@ export default function Layout({
                               </Link>
                             </li>
                           ))}
-                          <li className="pt-4 border-t border-border">
-                            <Link
-                              href="/admin/login"
-                              className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                              onClick={() => setMobileMenuOpen(false)}
-                            >
-                              <Shield className="h-4 w-4" />
-                              Administration
-                            </Link>
-                          </li>
                         </ul>
                       </nav>
                     </div>

@@ -74,16 +74,6 @@ function HomeContent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [propertyId]);
 
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
-      });
-    }
-  };
-
   if (!mounted) {
     return null;
   }
@@ -166,22 +156,6 @@ function HomeContent() {
         maxGuests={propertyData.maxGuests}
         amenities={propertyData.amenities}
       />
-
-      <div className="fixed bottom-20 left-6 z-30 hidden lg:flex flex-col gap-2">
-        {[
-          { id: 'decouverte', label: 'Découverte' },
-          { id: 'villa-presentation', label: 'À propos' },
-          { id: 'reservation', label: 'Réservation' }
-        ].map((section) => (
-          <button
-            key={section.id}
-            onClick={() => scrollToSection(section.id)}
-            className="text-xs text-muted-foreground hover:text-foreground transition-colors"
-          >
-            {section.label}
-          </button>
-        ))}
-      </div>
     </div>
   );
 }
