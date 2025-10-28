@@ -6,15 +6,13 @@ import {
   getProperty, 
   getReservations, 
   getAvailability,
-  getEvents,
-  getUser
+  getEvents
 } from '@/src/lib/firestore';
 import type { 
   Property, 
   Reservation, 
   AvailabilityDay, 
-  Event, 
-  User,
+  Event,
   PropertyFilters,
   ReservationFilters 
 } from '@/src/types/firestore';
@@ -156,33 +154,4 @@ export const useEvents = (propertyId?: string, startDate?: Date, endDate?: Date)
   }, [propertyId, startDate?.toISOString(), endDate?.toISOString()]);
 
   return { events, loading, error };
-};
-
-// Hook pour récupérer un utilisateur
-export const useUser = (userId: string) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    console.log("ça boucle 28")
-    if (!userId) return;
-
-    const fetchUser = async () => {
-      try {
-        setLoading(true);
-        const data = await getUser(userId);
-        setUser(data);
-        setError(null);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Utilisateur non trouvé');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUser();
-  }, [userId]);
-
-  return { user, loading, error };
 };

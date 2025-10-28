@@ -106,40 +106,6 @@ export interface Event {
   updatedAt: Date;
 }
 
-export interface User {
-  id: string;
-  email: string;
-  displayName?: string;
-  photoURL?: string;
-  role: 'guest' | 'admin';
-  profile: {
-    firstName?: string;
-    lastName?: string;
-    phone?: string;
-    dateOfBirth?: Date;
-    nationality?: string;
-  };
-  preferences: {
-    language: string;
-    currency: string;
-    notifications: {
-      email: boolean;
-      sms: boolean;
-    };
-  };
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface Settings {
-  id: string;
-  category: 'general' | 'booking' | 'payment' | 'notifications';
-  key: string;
-  value: any;
-  description?: string;
-  updatedAt: Date;
-}
-
 // Types pour les requêtes et filtres
 export interface PropertyFilters {
   type?: Property['type'];

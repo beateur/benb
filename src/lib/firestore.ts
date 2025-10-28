@@ -19,8 +19,7 @@ import type {
   Property, 
   Reservation, 
   AvailabilityDay, 
-  Event, 
-  User,
+  Event,
   PropertyFilters,
   ReservationFilters 
 } from '@/src/types/firestore';
@@ -30,8 +29,6 @@ export const propertiesRef = collection(db, 'properties');
 export const reservationsRef = collection(db, 'reservations');
 export const availabilityRef = collection(db, 'availability');
 export const eventsRef = collection(db, 'events');
-export const usersRef = collection(db, 'users');
-export const settingsRef = collection(db, 'settings');
 
 // Helper function to convert Firestore timestamps
 const convertTimestamps = (data: any) => {
@@ -258,52 +255,6 @@ export const getEvents = async (propertyId?: string, startDate?: Date, endDate?:
     })) as Event[];
   } catch (error) {
     console.error('Error getting events:', error);
-    throw error;
-  }
-};
-
-// User operations
-export const getUser = async (userId: string) => {
-  try {
-    const isAvailable = await isFirebaseAvailable();
-    if (!isAvailable) {
-      throw new Error('Firebase is offline');
-    }
-
-    const docRef = doc(usersRef, userId);
-    const snapshot = await getDoc(docRef);
-    
-    if (!snapshot.exists()) {
-      return null;
-    }
-    
-    return {
-      id: snapshot.id,
-      ...convertTimestamps(snapshot.data())
-    } as User;
-  } catch (error) {
-    console.error('Error getting user:', error);
-    throw error;
-  }
-};
-
-export const createUser = async (userId: string, userData: Omit<User, 'id' | 'createdAt' | 'updatedAt'>) => {
-  try {
-    const isAvailable = await isFirebaseAvailable();
-    if (!isAvailable) {
-      throw new Error('Firebase is offline - cannot create user');
-    }
-
-    const now = new Date();
-    const docRef = doc(usersRef, userId);
-    
-    await updateDoc(docRef, {
-      ...userData,
-      createdAt: Timestamp.fromDate(now),
-      updatedAt: Timestamp.fromDate(now)
-    });
-  } catch (error) {
-    console.error('Error creating user:', error);
     throw error;
   }
 };

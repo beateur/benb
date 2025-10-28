@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { Dialog, DialogContent, DialogClose } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
-import Image from '@/components/Image';
 
 interface MediaItem {
   id: string;
@@ -68,10 +68,11 @@ export function RoomGallery({ isOpen, onClose, room }: RoomGalleryProps) {
           <div className="relative aspect-[16/9] mb-4">
             <Image
               src={allImages[currentIndex].url}
-              fallbackUrl={allImages[currentIndex].fallbackUrl}
               alt={allImages[currentIndex].title}
-              className="w-full h-full object-cover rounded-lg"
               fill
+              className="object-cover rounded-lg"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 80vw"
+              quality={90}
             />
 
             {/* Flèche gauche */}
@@ -110,10 +111,11 @@ export function RoomGallery({ isOpen, onClose, room }: RoomGalleryProps) {
                   >
                     <Image
                       src={thumb.url}
-                      fallbackUrl={thumb.fallbackUrl}
                       alt={thumb.title}
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                       fill
+                      className="object-cover transition-transform duration-300 group-hover:scale-110"
+                      sizes="(max-width: 768px) 33vw, (max-width: 1200px) 25vw, 20vw"
+                      loading="lazy"
                     />
                     {isActive && (
                       <div className="absolute inset-0 ring-2 ring-primary rounded-lg pointer-events-none" />

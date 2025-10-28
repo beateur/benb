@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -71,25 +72,38 @@ function BackgroundMedia({ mediaType, imageUrl, videoUrl, y, opacity, title }: B
         >
           <source src={videoUrl} type="video/mp4" />
         </video>
-        {/* Image de fallback en arrière-plan */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat -z-10"
-          style={{ backgroundImage: `url(${imageUrl})` }}
-        />
+        {/* Image de fallback avec next/image */}
+        <div className="absolute inset-0 -z-10">
+          <Image
+            src={imageUrl}
+            alt={title}
+            fill
+            priority
+            quality={90}
+            className="object-cover"
+            sizes="100vw"
+          />
+        </div>
       </motion.div>
     );
   }
   
-  // Mode image par défaut
+  // Mode image par défaut avec next/image optimisé
   return (
     <motion.div 
-      className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-      style={{ 
-        backgroundImage: `url(${imageUrl})`,
-        y,
-        opacity
-      }}
-    />
+      className="absolute inset-0"
+      style={{ y, opacity }}
+    >
+      <Image
+        src={imageUrl}
+        alt={title}
+        fill
+        priority
+        quality={90}
+        className="object-cover"
+        sizes="100vw"
+      />
+    </motion.div>
   );
 }
 

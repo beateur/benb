@@ -2,13 +2,37 @@
 
 import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import { Property } from '@/src/types/firestore';
 import Hero from '@/components/Hero';
 import Discovery from '@/components/Discovery';
 import VillaPresentation from '@/components/VillaPresentation';
-import Map from '@/components/Map';
-import Events from '@/components/Events';
-import Reservation from '@/components/Reservation';
+
+// Lazy load des composants lourds avec placeholders
+const Map = dynamic(() => import('@/components/Map'), {
+  loading: () => (
+    <div className="h-96 bg-gradient-to-br from-muted/50 to-muted animate-pulse rounded-lg flex items-center justify-center">
+      <p className="text-muted-foreground">Chargement de la carte...</p>
+    </div>
+  ),
+  ssr: false,
+});
+
+const Events = dynamic(() => import('@/components/Events'), {
+  loading: () => (
+    <div className="min-h-[400px] bg-gradient-to-br from-muted/50 to-muted animate-pulse rounded-lg flex items-center justify-center">
+      <p className="text-muted-foreground">Chargement des événements...</p>
+    </div>
+  ),
+});
+
+const Reservation = dynamic(() => import('@/components/Reservation'), {
+  loading: () => (
+    <div className="min-h-screen bg-gradient-to-br from-muted/50 to-muted animate-pulse rounded-lg flex items-center justify-center">
+      <p className="text-muted-foreground">Chargement du système de réservation...</p>
+    </div>
+  ),
+});
 
 function HomeContent() {
   const searchParams = useSearchParams();
@@ -17,23 +41,15 @@ function HomeContent() {
   const [property, setProperty] = useState<Property | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    console.log("ça boucle 6")
-    setMounted(true);
-    fetchPropertyData();
-  }, [propertyId]);
-
   const fetchPropertyData = async () => {
     try {
       setLoading(true);
       
-      // Try to fetch property data from Firestore with timeout
       const timeoutPromise = new Promise((_, reject) => 
         setTimeout(() => reject(new Error('Connection timeout')), 5000)
       );
       
       try {
-        // Dynamic import to avoid SSR issues
         const { getProperty } = await import('@/src/lib/firestore');
         const propertyDataPromise = getProperty(propertyId);
         
@@ -41,7 +57,6 @@ function HomeContent() {
         setProperty(propertyData);
       } catch (error) {
         console.log('Firebase unavailable, using default property data:', error);
-        // Use default property data if Firestore fetch fails
         setProperty(null);
       }
     } catch (error) {
@@ -52,7 +67,13 @@ function HomeContent() {
     }
   };
 
-  // Scroll to section function
+  useEffect(() => {
+    console.log("ça boucle 6")
+    setMounted(true);
+    fetchPropertyData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [propertyId]);
+
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -67,7 +88,6 @@ function HomeContent() {
     return null;
   }
 
-  // Default property data for demo purposes
   const defaultPropertyData = {
     id: propertyId,
     name: "La Villa Roya",
@@ -107,7 +127,6 @@ function HomeContent() {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
       <Hero
         propertyId={propertyData.id}
         coverImageUrl={propertyData.images?.[0]}
@@ -119,17 +138,14 @@ function HomeContent() {
         maxGuests={propertyData.maxGuests}
       />
 
-      {/* Discovery Section */}
       <Discovery
         propertyId={propertyData.id}
         title="Découvrez votre villa de luxe"
         description="Plongez dans l'univers de cette propriété d'exception à travers notre galerie immersive. Chaque espace a été pensé pour votre confort et votre bien-être."
       />
 
-      {/* Villa Presentation Section */}
       <VillaPresentation propertyId={propertyData.id} />
 
-      {/* Map Section */}
       <Map
         propertyId={propertyData.id}
         latitude={propertyData.location.coordinates.lat}
@@ -139,12 +155,10 @@ function HomeContent() {
         country={propertyData.location.country}
       />
 
-      {/* Events Section */}
       <Events
         propertyId={propertyData.id}
       />
 
-      {/* Reservation Section */}
       <Reservation
         propertyId={propertyData.id}
         propertyName={propertyData.name}
@@ -153,7 +167,6 @@ function HomeContent() {
         amenities={propertyData.amenities}
       />
 
-      {/* Scroll Navigation Helper */}
       <div className="fixed bottom-20 left-6 z-30 hidden lg:flex flex-col gap-2">
         {[
           { id: 'decouverte', label: 'Découverte' },
@@ -163,8 +176,7 @@ function HomeContent() {
           <button
             key={section.id}
             onClick={() => scrollToSection(section.id)}
-            className="px-3 py-2 text-xs font-medium bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border border-border rounded-lg shadow-sm hover:bg-white dark:hover:bg-slate-900 transition-colors"
-            aria-label={`Aller à la section ${section.label}`}
+            className="text-xs text-muted-foreground hover:text-foreground transition-colors"
           >
             {section.label}
           </button>
@@ -176,7 +188,7 @@ function HomeContent() {
 
 export default function Home() {
   return (
-    <Suspense fallback={<div>Chargement...</div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Chargement...</div>}>
       <HomeContent />
     </Suspense>
   );
