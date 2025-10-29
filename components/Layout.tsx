@@ -301,7 +301,7 @@ export default function Layout({
                       className="hover:text-foreground transition-colors focus:outline-none focus:underline"
                       aria-label="Contacter via WhatsApp"
                     >
-                      +33 1 23 45 67 89
+                      +33 6 83 86 30 64
                     </a>
                   </div>
                   <div className="flex items-center gap-3 text-sm text-muted-foreground">

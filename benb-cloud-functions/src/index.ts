@@ -36,11 +36,11 @@ interface ReservationData {
 }
 
 /**
- * Génère le template HTML de l'email de confirmation pour le client
+ * Génère le template HTML de l'email pour le client (demande en attente de validation)
  */
 function generateGuestEmailTemplate(data: ReservationData): string {
-  const guestName = data.guestName || "Cher client";
-  const propertyName = data.propertyName || "notre propriété";
+  const guestName = data.guestName || "Cher voyageur";
+  const propertyName = data.propertyName || "La Villa Roya";
 
   return `
     <!DOCTYPE html>
@@ -48,7 +48,7 @@ function generateGuestEmailTemplate(data: ReservationData): string {
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Confirmation de réservation</title>
+        <title>Demande de réservation reçue</title>
         <style>
           body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -72,9 +72,19 @@ function generateGuestEmailTemplate(data: ReservationData): string {
             border-bottom: 2px solid #e0e0e0;
           }
           .header h1 {
-            color: #2563eb;
+            color: #ea580c;
             margin: 0;
             font-size: 28px;
+          }
+          .pending-badge {
+            display: inline-block;
+            background-color: #ea580c;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 10px;
           }
           .content {
             margin-bottom: 30px;
@@ -85,26 +95,34 @@ function generateGuestEmailTemplate(data: ReservationData): string {
             margin-bottom: 15px;
           }
           .details {
-            background-color: #f8fafc;
+            background-color: #fff7ed;
             padding: 20px;
             border-radius: 6px;
             margin: 20px 0;
+            border-left: 4px solid #ea580c;
           }
           .details-row {
             display: flex;
             justify-content: space-between;
             padding: 8px 0;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid #fed7aa;
           }
           .details-row:last-child {
             border-bottom: none;
           }
           .label {
             font-weight: 600;
-            color: #64748b;
+            color: #9a3412;
           }
           .value {
-            color: #0f172a;
+            color: #431407;
+          }
+          .info-box {
+            background-color: #fff7ed;
+            border-left: 4px solid #f97316;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
           }
           .footer {
             text-align: center;
@@ -114,71 +132,67 @@ function generateGuestEmailTemplate(data: ReservationData): string {
             color: #666;
             font-size: 14px;
           }
-          .cta-button {
-            display: inline-block;
-            background-color: #2563eb;
-            color: white;
-            padding: 12px 30px;
-            text-decoration: none;
-            border-radius: 6px;
-            margin: 20px 0;
-            font-weight: 600;
-          }
         </style>
       </head>
       <body>
         <div class="container">
           <div class="header">
-            <h1>✨ Réservation confirmée</h1>
+            <span class="pending-badge">⏳ EN ATTENTE DE VALIDATION</span>
+            <h1>Demande bien reçue !</h1>
           </div>
           
           <div class="content">
             <p class="greeting">Bonjour ${guestName},</p>
             
-            <p>Nous avons bien reçu votre demande de réservation pour <strong>${propertyName}</strong>.</p>
+            <p>Nous vous remercions chaleureusement pour votre intérêt pour <strong>${propertyName}</strong>.</p>
             
-            <p>Notre équipe va prendre contact avec vous très prochainement pour finaliser les détails de votre séjour.</p>
+            <p>Votre demande de réservation a bien été transmise à notre famille. Nous l'étudions avec attention et vous recontacterons <strong>très rapidement</strong> pour vous confirmer la disponibilité et finaliser les détails de votre séjour.</p>
             
             ${data.checkInDate ? `
             <div class="details">
               <div class="details-row">
-                <span class="label">Propriété :</span>
+                <span class="label">🏡 Propriété :</span>
                 <span class="value">${propertyName}</span>
               </div>
               ${data.checkInDate ? `
               <div class="details-row">
-                <span class="label">Arrivée :</span>
-                <span class="value">${new Date(data.checkInDate.seconds * 1000).toLocaleDateString("fr-FR")}</span>
+                <span class="label">📅 Arrivée souhaitée :</span>
+                <span class="value">${new Date(data.checkInDate.seconds * 1000).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</span>
               </div>
               ` : ""}
               ${data.checkOutDate ? `
               <div class="details-row">
-                <span class="label">Départ :</span>
-                <span class="value">${new Date(data.checkOutDate.seconds * 1000).toLocaleDateString("fr-FR")}</span>
+                <span class="label">📅 Départ souhaité :</span>
+                <span class="value">${new Date(data.checkOutDate.seconds * 1000).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</span>
               </div>
               ` : ""}
               ${data.numberOfGuests ? `
               <div class="details-row">
-                <span class="label">Nombre de voyageurs :</span>
-                <span class="value">${data.numberOfGuests}</span>
+                <span class="label">👥 Nombre de voyageurs :</span>
+                <span class="value">${data.numberOfGuests} personne${data.numberOfGuests > 1 ? "s" : ""}</span>
               </div>
               ` : ""}
               ${data.totalPrice ? `
               <div class="details-row">
-                <span class="label">Prix total :</span>
+                <span class="label">💰 Estimation :</span>
                 <span class="value">${data.totalPrice}€</span>
               </div>
               ` : ""}
             </div>
             ` : ""}
             
-            <p>Si vous avez des questions ou des demandes spéciales, n'hésitez pas à nous contacter.</p>
+            <div class="info-box">
+              <p style="margin: 0; font-weight: 600; color: #9a3412; margin-bottom: 8px;">ℹ️ Prochaines étapes</p>
+              <p style="margin: 0; color: #7c2d12;">Notre famille étudiera votre demande et reviendra vers vous sous <strong>24 à 48 heures</strong> pour confirmer ou ajuster votre réservation selon la disponibilité.</p>
+            </div>
             
-            <p style="margin-top: 30px;">À très bientôt,<br><strong>L'équipe La Villa Roya</strong></p>
+            <p>En attendant, si vous avez la moindre question, n'hésitez pas à nous contacter. Nous serons ravis d'échanger avec vous !</p>
+            
+            <p style="margin-top: 30px;">Au plaisir de vous accueillir bientôt,<br><strong>La famille - Villa Roya</strong></p>
           </div>
           
           <div class="footer">
-            <p>Cet email a été envoyé automatiquement, merci de ne pas y répondre directement.</p>
+            <p>Cet email a été envoyé automatiquement. Pour toute question, vous pouvez nous répondre directement.</p>
             <p style="font-size: 12px; color: #999;">© ${new Date().getFullYear()} La Villa Roya - Tous droits réservés</p>
           </div>
         </div>
@@ -200,7 +214,7 @@ function generateOperatorEmailTemplate(data: ReservationData): string {
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Nouvelle réservation</title>
+        <title>Nouvelle demande de réservation</title>
         <style>
           body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -224,13 +238,13 @@ function generateOperatorEmailTemplate(data: ReservationData): string {
             border-bottom: 2px solid #e0e0e0;
           }
           .header h1 {
-            color: #dc2626;
+            color: #ea580c;
             margin: 0;
             font-size: 28px;
           }
           .alert-badge {
             display: inline-block;
-            background-color: #dc2626;
+            background-color: #ea580c;
             color: white;
             padding: 6px 16px;
             border-radius: 20px;
@@ -242,26 +256,27 @@ function generateOperatorEmailTemplate(data: ReservationData): string {
             margin-bottom: 30px;
           }
           .details {
-            background-color: #f8fafc;
+            background-color: #fff7ed;
             padding: 20px;
             border-radius: 6px;
             margin: 20px 0;
+            border-left: 4px solid #ea580c;
           }
           .details-row {
             display: flex;
             justify-content: space-between;
             padding: 8px 0;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid #fed7aa;
           }
           .details-row:last-child {
             border-bottom: none;
           }
           .label {
             font-weight: 600;
-            color: #64748b;
+            color: #9a3412;
           }
           .value {
-            color: #0f172a;
+            color: #431407;
             font-weight: 500;
           }
           .special-requests {
@@ -270,6 +285,13 @@ function generateOperatorEmailTemplate(data: ReservationData): string {
             padding: 15px;
             margin: 20px 0;
             border-radius: 4px;
+          }
+          .action-box {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #fff7ed;
+            border-radius: 6px;
+            border-left: 4px solid #f97316;
           }
           .footer {
             text-align: center;
@@ -284,12 +306,16 @@ function generateOperatorEmailTemplate(data: ReservationData): string {
       <body>
         <div class="container">
           <div class="header">
-            <span class="alert-badge">🔔 NOUVELLE RÉSERVATION</span>
+            <span class="alert-badge">⏳ DEMANDE EN ATTENTE</span>
             <h1>Nouvelle demande de réservation</h1>
           </div>
           
           <div class="content">
-            <p><strong>Une nouvelle réservation vient d'être enregistrée pour ${propertyName}.</strong></p>
+            <p><strong>Une nouvelle demande de réservation vient d'être reçue pour ${propertyName}.</strong></p>
+            
+            <p style="padding: 12px; background-color: #fff7ed; border-radius: 6px; margin: 15px 0;">
+              ℹ️ Le client a été informé que sa demande est <strong>en cours d'étude</strong> et qu'il recevra une réponse sous 24-48h.
+            </p>
             
             <div class="details">
               <div class="details-row">
@@ -306,13 +332,13 @@ function generateOperatorEmailTemplate(data: ReservationData): string {
               </div>
               ${data.checkInDate ? `
               <div class="details-row">
-                <span class="label">📅 Arrivée :</span>
+                <span class="label">📅 Arrivée souhaitée :</span>
                 <span class="value">${new Date(data.checkInDate.seconds * 1000).toLocaleDateString("fr-FR", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</span>
               </div>
               ` : ""}
               ${data.checkOutDate ? `
               <div class="details-row">
-                <span class="label">📅 Départ :</span>
+                <span class="label">📅 Départ souhaité :</span>
                 <span class="value">${new Date(data.checkOutDate.seconds * 1000).toLocaleDateString("fr-FR", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</span>
               </div>
               ` : ""}
@@ -324,7 +350,7 @@ function generateOperatorEmailTemplate(data: ReservationData): string {
               ` : ""}
               ${data.totalPrice ? `
               <div class="details-row">
-                <span class="label">💰 Prix total :</span>
+                <span class="label">💰 Estimation :</span>
                 <span class="value">${data.totalPrice}€</span>
               </div>
               ` : ""}
@@ -332,14 +358,19 @@ function generateOperatorEmailTemplate(data: ReservationData): string {
             
             ${(data as any).specialRequests ? `
             <div class="special-requests">
-              <p style="margin: 0; font-weight: 600; color: #92400e; margin-bottom: 8px;">⚠️ Demandes spéciales :</p>
+              <p style="margin: 0; font-weight: 600; color: #92400e; margin-bottom: 8px;">💬 Demandes spéciales du client :</p>
               <p style="margin: 0; color: #78350f;">${(data as any).specialRequests}</p>
             </div>
             ` : ""}
             
-            <p style="margin-top: 30px; padding: 15px; background-color: #dbeafe; border-radius: 6px; border-left: 4px solid #2563eb;">
-              <strong>Action requise :</strong> Contactez le client rapidement pour confirmer la disponibilité et finaliser les détails du séjour.
-            </p>
+            <div class="action-box">
+              <p style="margin: 0; font-weight: 600; color: #9a3412; margin-bottom: 8px;">✅ Actions à réaliser :</p>
+              <ul style="margin: 8px 0 0 0; padding-left: 20px; color: #7c2d12;">
+                <li>Vérifier la disponibilité pour les dates demandées</li>
+                <li>Contacter le client sous 24-48h pour confirmer ou proposer des alternatives</li>
+                <li>Finaliser les détails du séjour si validation</li>
+              </ul>
+            </div>
           </div>
           
           <div class="footer">
@@ -405,12 +436,12 @@ export const sendReservationConfirmation = onDocumentCreated(
       const guestHtmlContent = generateGuestEmailTemplate(reservationData);
       const operatorHtmlContent = generateOperatorEmailTemplate(reservationData);
 
-      // 📧 Email 1 : Confirmation au client
+      // 📧 Email 1 : Notification au client (demande en attente)
       logger.info(`[Reservation ${reservationId}] Envoi email au client...`);
       const {data: guestData, error: guestError} = await resend.emails.send({
-        from: "La Villa Roya <noreply@villaroya.space>",
+        from: "La Villa Roya <noreply@villaroya.fr>",
         to: guestEmail,
-        subject: `Confirmation de votre demande de réservation - ${reservationData.propertyName || "La Villa Roya"}`,
+        subject: `Demande de réservation reçue - ${reservationData.propertyName || "La Villa Roya"}`,
         html: guestHtmlContent,
       });
 
@@ -427,12 +458,12 @@ export const sendReservationConfirmation = onDocumentCreated(
         });
       }
 
-      // 📧 Email 2 : Notification à l'opérateur
+      // 📧 Email 2 : Notification à l'opérateur (validation requise)
       logger.info(`[Reservation ${reservationId}] Envoi email à l'opérateur...`);
       const {data: operatorData, error: operatorError} = await resend.emails.send({
-        from: "La Villa Roya <noreply@villaroya.space>",
+        from: "La Villa Roya <noreply@villaroya.fr>",
         to: "habilel99@gmail.com",
-        subject: `🔔 Nouvelle réservation - ${guestName} (${reservationData.propertyName || "La Villa Roya"})`,
+        subject: `⏳ Nouvelle demande à valider - ${guestName} (${reservationData.propertyName || "La Villa Roya"})`,
         html: operatorHtmlContent,
       });
 

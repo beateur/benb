@@ -554,15 +554,15 @@ export default function Reservation({
       <Dialog open={confirmationOpen} onOpenChange={setConfirmationOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-green-600">
-              <Check className="h-6 w-6" />
-              Réservation confirmée !
+            <DialogTitle className="flex items-center gap-2 text-orange-600">
+              <Clock className="h-6 w-6" />
+              Demande bien reçue !
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-              <p className="text-sm text-green-800">
-                Votre réservation a été créée avec succès. Vous recevrez un email de confirmation sous peu.
+            <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+              <p className="text-sm text-orange-800 leading-relaxed">
+                Votre demande de réservation a été transmise avec succès. Notre famille va l'étudier et vous recontactera sous <strong>24 à 48 heures</strong> pour confirmer votre séjour.
               </p>
             </div>
             

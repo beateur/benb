@@ -36,7 +36,6 @@ export function RoomGallery({ isOpen, onClose, room }: RoomGalleryProps) {
 
   // 3. Reset de l'index à 0 à chaque ouverture du modal
   useEffect(() => {
-    console.log("ça boucle 10")
     if (isOpen) {
       setCurrentIndex(0);
     }
@@ -65,12 +64,12 @@ export function RoomGallery({ isOpen, onClose, room }: RoomGalleryProps) {
 
         <div className="h-full overflow-y-auto">
           {/* Main Carousel Image */}
-          <div className="relative aspect-[16/9] mb-4">
+          <div className="relative aspect-[16/9] mb-4 bg-black rounded-lg">
             <Image
               src={allImages[currentIndex].url}
               alt={allImages[currentIndex].title}
               fill
-              className="object-cover rounded-lg"
+              className="object-contain rounded-lg"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 80vw"
               quality={90}
             />
@@ -79,7 +78,7 @@ export function RoomGallery({ isOpen, onClose, room }: RoomGalleryProps) {
             <button
               onClick={prev}
               aria-label="Image précédente"
-              className="absolute left-2 top-1/2 -translate-y-1/2 p-2 bg-black/40 rounded-full"
+              className="absolute left-2 top-1/2 -translate-y-1/2 p-2 bg-black/60 hover:bg-black/80 rounded-full transition-colors z-10"
             >
               <ChevronLeft className="w-6 h-6 text-white" />
             </button>
@@ -88,7 +87,7 @@ export function RoomGallery({ isOpen, onClose, room }: RoomGalleryProps) {
             <button
               onClick={next}
               aria-label="Image suivante"
-              className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-black/40 rounded-full"
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-black/60 hover:bg-black/80 rounded-full transition-colors z-10"
             >
               <ChevronRight className="w-6 h-6 text-white" />
             </button>
@@ -105,21 +104,18 @@ export function RoomGallery({ isOpen, onClose, room }: RoomGalleryProps) {
                   <button
                     key={thumb.id}
                     onClick={() => setCurrentIndex(globalIndex)}
-                    className={`relative aspect-square overflow-hidden rounded-lg focus:outline-none ${
-                      isActive ? 'ring-2 ring-primary' : ''
+                    className={`relative aspect-square overflow-hidden rounded-lg focus:outline-none transition-all ${
+                      isActive ? 'ring-2 ring-primary' : 'hover:opacity-80'
                     }`}
                   >
                     <Image
                       src={thumb.url}
                       alt={thumb.title}
                       fill
-                      className="object-cover transition-transform duration-300 group-hover:scale-110"
+                      className="object-cover"
                       sizes="(max-width: 768px) 33vw, (max-width: 1200px) 25vw, 20vw"
                       loading="lazy"
                     />
-                    {isActive && (
-                      <div className="absolute inset-0 ring-2 ring-primary rounded-lg pointer-events-none" />
-                    )}
                   </button>
                 );
               })}

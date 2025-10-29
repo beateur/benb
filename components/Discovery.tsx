@@ -50,18 +50,6 @@ const getRoomImages = (): { [key: string]: RoomImages } => {
       },
       relatedImages: [
         {
-          id: 'exterieur-vue-principale',
-          ...generateImageUrls('exterieur-vue-principale'),
-          type: 'image',
-          title: 'Vue principale extérieure'
-        },
-        {
-          id: 'exterieur-terrasse',
-          ...generateImageUrls('exterieur-terrasse'),
-          type: 'image',
-          title: 'Terrasse 1er étage'
-        },
-        {
           id: 'exterieur-terrasse-2',
           ...generateImageUrls('exterieur-terrasse-2'),
           type: 'image',
@@ -80,10 +68,16 @@ const getRoomImages = (): { [key: string]: RoomImages } => {
           title: 'Terrasse couverte - Rez-de-chaussée'
         },
         {
-          id: 'vue-exterieur-montagnes',
-          ...generateImageUrls('vue-exterieur-montagnes'),
+          id: 'exterieur-terrasse-etage',
+          ...generateImageUrls('exterieur-terrasse-etage'),
           type: 'image',
-          title: 'Vue sur les montagnes'
+          title: 'Terrasse RDC'
+        },
+        {
+          id: 'exterieur-terrasse-etage-2',
+          ...generateImageUrls('exterieur-terrasse-etage-2'),
+          type: 'image',
+          title: 'Terrasse 1er étage'
         }
       ]
     },
@@ -99,28 +93,22 @@ const getRoomImages = (): { [key: string]: RoomImages } => {
       },
       relatedImages: [
         {
-          id: 'salon-01',
-          ...generateImageUrls('salon-01'),
+          id: 'salon-05',
+          ...generateImageUrls('salon-05'),
           type: 'image',
           title: 'Salon - Vue 1'
         },
         {
-          id: 'salon-03',
-          ...generateImageUrls('salon-03'),
+          id: 'salon-06',
+          ...generateImageUrls('salon-06'),
           type: 'image',
-          title: 'Salon - Vue 2'
+          title: 'Salon principale'
         },
         {
-          id: 'salon-04',
-          ...generateImageUrls('salon-04'),
+          id: 'salon-07',
+          ...generateImageUrls('salon-07'),
           type: 'image',
-          title: 'Salon - Vue 3'
-        },
-        {
-          id: 'salon-05',
-          ...generateImageUrls('salon-05'),
-          type: 'image',
-          title: 'Salon - Vue 4'
+          title: 'Salon principale'
         }
       ]
     },
@@ -146,6 +134,12 @@ const getRoomImages = (): { [key: string]: RoomImages } => {
           ...generateImageUrls('cuisine-03'),
           type: 'image',
           title: 'Cuisine - Équipements'
+        },
+        {
+          id: 'cuisine-04',
+          ...generateImageUrls('cuisine-04'),
+          type: 'image',
+          title: 'Cuisine équipée'
         }
       ]
     },
@@ -161,10 +155,10 @@ const getRoomImages = (): { [key: string]: RoomImages } => {
       },
       relatedImages: [
         {
-          id: 'piscine-01',
-          ...generateImageUrls('piscine-01'),
+          id: 'piscine-02',
+          ...generateImageUrls('piscine-02'),
           type: 'image',
-          title: 'Piscine - Vue d\'ensemble'
+          title: 'Piscine'
         },
         {
           id: 'piscine-04',
