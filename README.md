@@ -118,7 +118,7 @@ Les emulateurs démarrent Firestore (8080), Hosting (5000), ainsi qu'une UI (por
 ## Démo
 
 - **Aperçu local** : [http://localhost:3000](http://localhost:3000) via `npm run dev`.
-- **Exemple de déploiement Firebase** : https://benb-74435.web.app (remplacez par l'URL générée pour votre propre projet après déploiement).
+- **Production** : https://villaroya-eed5f.web.app
 
 ## Ressources utiles
 

@@ -26,13 +26,13 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'fr_FR',
-    url: 'https://benb-74435.web.app',
+    url: 'https://villaroya-eed5f.web.app',
     siteName: 'VillaRoya',
     title: 'VillaRoya - Location de luxe en Corse',
     description: 'Villa de prestige avec piscine privée, 5 chambres, terrasses panoramiques. Location haut de gamme pour des vacances inoubliables en Corse.',
     images: [
       {
-        url: 'https://benb-74435.web.app/assets/images/CoverHero.avif',
+        url: 'https://villaroya-eed5f.web.app/assets/images/CoverHero.avif',
         width: 1200,
         height: 630,
         alt: 'VillaRoya - Vue panoramique en Corse',
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'VillaRoya - Location de luxe en Corse',
     description: 'Villa de prestige avec piscine privée en Corse. 5 chambres, vue panoramique, équipements haut de gamme.',
-    images: ['https://benb-74435.web.app/assets/images/CoverHero.avif'],
+    images: ['https://villaroya-eed5f.web.app/assets/images/CoverHero.avif'],
   },
   icons: {
     icon: '/favicon.ico',

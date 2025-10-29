@@ -266,8 +266,8 @@ export default function Layout({
                   <h3 className="font-semibold text-foreground">La Villa Roya</h3>
                 </div>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  Votre partenaire de confiance pour des locations de vacances d'exception. 
-                  Découvrez des propriétés uniques pour des séjours inoubliables.
+                  Un lieu privé et élégant pour des séjours d’exception.
+                  Savourez luxe, confort et tranquillité dans un environnement privilégié.
                 </p>
               </div>
 
